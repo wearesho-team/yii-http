@@ -49,7 +49,7 @@ class Action extends BaseAction
 
         $panel = \Yii::$container->get($className, [\Yii::$app->request, \Yii::$app->response]);
         if (!$panel instanceof Panel) {
-            throw new InvalidConfigException("{$this->panels} class must extend AbstractPanel");
+            throw new InvalidConfigException("{$panel} class must extend AbstractPanel");
         }
 
         return $panel->asArray();
