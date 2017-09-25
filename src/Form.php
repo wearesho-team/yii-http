@@ -3,7 +3,7 @@
 
 namespace Wearesho\Yii\Http;
 
-use yii\base\Controller;
+use yii\base\Controller as BaseController;
 
 use yii\db\Connection;
 
@@ -40,8 +40,8 @@ abstract class Form extends Panel
     {
         parent::init();
 
-        $this->on(Controller::EVENT_BEFORE_ACTION, [$this, 'begin']);
-        $this->on(Controller::EVENT_AFTER_ACTION, [$this, 'commit']);
+        $this->on(BaseController::EVENT_BEFORE_ACTION, [$this, 'begin']);
+        $this->on(BaseController::EVENT_AFTER_ACTION, [$this, 'commit']);
     }
 
     /**

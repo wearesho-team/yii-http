@@ -5,7 +5,7 @@ namespace Wearesho\Yii\Http;
 
 use Wearesho\Yii\Http\Exceptions\ValidationException;
 use yii\base\Model;
-use yii\base\Controller;
+use yii\base\Controller as BaseController;
 use yii\web\Request;
 use yii\web\Response;
 
@@ -46,9 +46,9 @@ abstract class Panel extends Model
     {
         $this->response->format = Response::FORMAT_JSON;
         $this->load($this->request->getBodyParams());
-        $this->trigger(Controller::EVENT_BEFORE_ACTION);
+        $this->trigger(BaseController::EVENT_BEFORE_ACTION);
         $this->response->data = $this->generateResponse();
-        $this->trigger(Controller::EVENT_AFTER_ACTION);
+        $this->trigger(BaseController::EVENT_AFTER_ACTION);
 
         return $this->response;
     }
