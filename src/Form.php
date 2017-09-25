@@ -7,9 +7,6 @@ use yii\base\Controller as BaseController;
 
 use yii\db\Connection;
 
-use yii\web\Request as WebRequest;
-use yii\web\Response as WebResponse;
-
 /**
  * Class Form
  * @package Wearesho\Yii\Http
@@ -21,12 +18,12 @@ abstract class Form extends Panel
 
     /**
      * Form constructor.
-     * @param WebRequest $request
-     * @param WebResponse $response
+     * @param Request $request
+     * @param Response $response
      * @param Connection $connection
      * @param array $config
      */
-    public function __construct(WebRequest $request, WebResponse $response, Connection $connection, array $config = [])
+    public function __construct(Request $request, Response $response, Connection $connection, array $config = [])
     {
         parent::__construct($request, $response, $config);
 
@@ -45,10 +42,10 @@ abstract class Form extends Panel
     }
 
     /**
-     * @return WebResponse
+     * @return Response
      * @throws \Throwable
      */
-    public function getResponse(): WebResponse
+    public function getResponse(): Response
     {
         try {
             return parent::getResponse();
