@@ -43,12 +43,13 @@ class Action extends BaseAction
         if ($method === 'options') {
             return null;
         }
+
         $className = $this->panels[$method] ?? null;
         if (is_null($className)) {
             throw new NotFoundHttpException();
         }
 
-        $panel = \Yii::$container->get($className, [\Yii::$app->request, \Yii::$app->response]);
+        $panel = \Yii::$container->get($className);
         if (!$panel instanceof Panel) {
             throw new InvalidConfigException("{$panel} class must extend AbstractPanel");
         }
