@@ -6,6 +6,7 @@ use yii\base\InvalidConfigException;
 use yii\base\Action as BaseAction;
 
 use yii\web\NotFoundHttpException;
+use yii\web\Response as WebResponse;
 
 
 /**
@@ -32,7 +33,7 @@ class Action extends BaseAction
     }
 
     /**
-     * @return array|null
+     * @return WebResponse
      * @throws InvalidConfigException
      * @throws NotFoundHttpException
      */
@@ -52,6 +53,6 @@ class Action extends BaseAction
             throw new InvalidConfigException("{$panel} class must extend AbstractPanel");
         }
 
-        return $panel->asArray();
+        return $panel->getResponse();
     }
 }
