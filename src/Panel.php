@@ -45,6 +45,7 @@ abstract class Panel extends Model
     public function getResponse(): Response
     {
         $this->response->format = Response::FORMAT_JSON;
+        $this->load($this->request->getBodyParams());
         $this->trigger(Controller::EVENT_BEFORE_ACTION);
         $this->response->data = $this->generateResponse();
         $this->trigger(Controller::EVENT_AFTER_ACTION);
