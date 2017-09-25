@@ -6,8 +6,8 @@ namespace Wearesho\Yii\Http;
 use Wearesho\Yii\Http\Exceptions\ValidationException;
 use yii\base\Model;
 use yii\base\Controller as BaseController;
-use yii\web\Request;
-use yii\web\Response;
+use yii\web\Request as WebRequest;
+use yii\web\Response as WebResponse;
 
 /**
  * Class Panel
@@ -17,7 +17,7 @@ abstract class Panel extends Model
 {
     const EVENT_ON_EXCEPTION = 'onException';
 
-    /** @var  Request */
+    /** @var  WebRequest */
     protected $request;
 
     /** @var  Response */
@@ -26,11 +26,11 @@ abstract class Panel extends Model
     /**
      * Panel constructor.
      *
-     * @param Request $request
-     * @param Response $response
+     * @param WebRequest $request
+     * @param WebResponse $response
      * @param array $config
      */
-    public function __construct(Request $request, Response $response, array $config = [])
+    public function __construct(WebRequest $request, WebResponse $response, array $config = [])
     {
         parent::__construct($config);
 
@@ -40,11 +40,11 @@ abstract class Panel extends Model
 
     /**
      * @throws ValidationException
-     * @return Response
+     * @return WebResponse
      */
-    public function getResponse(): Response
+    public function getResponse(): WebResponse
     {
-        $this->response->format = Response::FORMAT_JSON;
+        $this->response->format = WebResponse::FORMAT_JSON;
 
         $this->load($this->request->getBodyParams());
         ValidationException::validateOrThrow($this);

@@ -6,25 +6,17 @@ Alternative work with HTTP
 ```bash
 composer require wearesho-team/yii-tokens
 ```
-Add to your config:
-```php
-common/config/main.php
-<?php
-return [
-    'components' => [
-        'errorHandler' => [
-            'class' => \Wearesho\Yii\Http\ErrorHandler::class,
-        ],
-        'response' => [
-            'class' => \Wearesho\Yii\Http\Response::class,
-        ],
-    ],
-];
-
-```
 Add to your DI container:
 ```php
 <?php
+\Yii::$container->setSingleton(
+    \yii\web\Response::class,
+    \Wearesho\Yii\Http\Response::class
+);
+\Yii::$container->set(
+    \yii\web\ErrorHandler::class,
+    \Wearesho\Yii\Http\ErrorHandler::class
+);
 \Yii::$container->setSingleton(\yii\db\Connection::class);
 ```
 
