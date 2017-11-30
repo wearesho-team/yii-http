@@ -1,6 +1,6 @@
 <?php
 
-namespace Wearesho\Yii\Tests;
+namespace Wearesho\Yii\Http\Tests;
 
 
 use PHPUnit\Framework\TestCase;
@@ -39,21 +39,6 @@ abstract class AbstractTestCase extends TestCase
         ];
 
         \Yii::$app = new Application($config);
-        foreach (new DirectoryIterator(dirname(__DIR__) . "/migrations") as $file) {
-            if (!$file->isFile()) {
-                continue;
-            }
-            include_once $file->getRealPath();
-            $class = str_replace('.php', '', $file);
-            $migration = new $class;
-            if (!$migration instanceof Migration) {
-                continue;
-            }
-
-            ob_start();
-            $migration->up();
-            ob_end_clean();
-        }
     }
 
     protected function tearDown()
@@ -61,8 +46,6 @@ abstract class AbstractTestCase extends TestCase
         parent::tearDown();
 
         \Yii::$app = null;
-        if (file_exists($_ENV['DB_PATH'])) {
-            unlink($_ENV['DB_PATH']);
-        }
+        \Yii::$container = null;
     }
 }
