@@ -14,6 +14,7 @@ use yii\base\Controller as BaseController;
 abstract class Panel extends Model
 {
     const EVENT_ON_EXCEPTION = 'onException';
+    const EVENT_BEFORE_VALIDATE = 'beforeValidate';
 
     /** @var  Request */
     protected $request;
@@ -44,6 +45,7 @@ abstract class Panel extends Model
     {
         $this->response->format = Response::FORMAT_JSON;
 
+        $this->trigger(static::EVENT_BEFORE_VALIDATE);
         $this->load($this->request->getBodyParams());
         ValidationException::validateOrThrow($this);
 
