@@ -2,6 +2,10 @@
 
 Alternative work with HTTP
 
+### Contents
+#### GetParamsBehavior [[Example]](./tests/Behaviors/GetParamsBehaviorTest.php)
+Fills Panel attributes from \yii\web\Request::get().
+
 ### Installation
 ```bash
 composer require wearesho-team/yii-tokens
@@ -23,3 +27,6 @@ Add to your DI container:
 ### TODO
 1. Documentation
 2. Tests
+
+### LICENSE
+Unlicensed
