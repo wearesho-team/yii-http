@@ -11,6 +11,7 @@ use yii\db\Migration;
 use yii\db\Connection;
 
 use \DirectoryIterator;
+use yii\di\Container;
 
 /**
  * Class AbstractTestCase
@@ -38,6 +39,7 @@ abstract class AbstractTestCase extends TestCase
             ],
         ];
 
+        \Yii::$container = new Container();
         \Yii::$app = new Application($config);
     }
 
