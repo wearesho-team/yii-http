@@ -3,7 +3,7 @@
 
 namespace Wearesho\Yii\Http;
 
-use Wearesho\Yii\Http\Exceptions\ValidationException;
+use Wearesho\Yii\Http\Exceptions\HttpValidationException;
 use yii\web\ErrorHandler as WebErrorHandler;
 
 
@@ -20,7 +20,7 @@ class ErrorHandler extends WebErrorHandler
     protected function convertExceptionToArray($exception)
     {
         $exceptionArray = parent::convertExceptionToArray($exception);
-        if ($exception instanceof ValidationException) {
+        if ($exception instanceof HttpValidationException) {
             $exceptionArray['errors'] = [];
             foreach ($exception->getModel()->getErrors() as $attribute => $errors) {
                 foreach ($errors as $details) {

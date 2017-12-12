@@ -3,7 +3,7 @@
 
 namespace Wearesho\Yii\Http;
 
-use Wearesho\Yii\Http\Exceptions\ValidationException;
+use Wearesho\Yii\Http\Exceptions\HttpValidationException;
 use yii\base\Model;
 use yii\base\Controller as BaseController;
 
@@ -38,7 +38,7 @@ abstract class Panel extends Model
     }
 
     /**
-     * @throws ValidationException
+     * @throws HttpValidationException
      * @return Response
      */
     public function getResponse(): Response
@@ -47,7 +47,7 @@ abstract class Panel extends Model
 
         $this->trigger(static::EVENT_BEFORE_VALIDATE);
         $this->load($this->request->getBodyParams());
-        ValidationException::validateOrThrow($this);
+        HttpValidationException::validateOrThrow($this);
 
         $this->trigger(BaseController::EVENT_BEFORE_ACTION);
         $this->response->data = $this->generateResponse();
@@ -58,7 +58,7 @@ abstract class Panel extends Model
 
 
     /**
-     * @throws ValidationException
+     * @throws HttpValidationException
      * @return array
      */
     abstract protected function generateResponse(): array;
