@@ -5,7 +5,7 @@ namespace Wearesho\Yii\Http\Tests\Behaviors;
 
 
 use Wearesho\Yii\Http\Behaviors\AccessControl;
-use Wearesho\Yii\Http\Exceptions\ValidationException;
+use Wearesho\Yii\Http\Exceptions\HttpValidationException;
 use Wearesho\Yii\Http\Panel;
 use Wearesho\Yii\Http\Request;
 use Wearesho\Yii\Http\Response;

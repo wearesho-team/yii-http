@@ -3,7 +3,7 @@
 
 namespace Wearesho\Yii\Http;
 
-use Wearesho\Yii\Http\Exceptions\ValidationException;
+use Wearesho\Yii\Http\Exceptions\HttpValidationException;
 use yii\web\Response as WebResponse;
 
 /**
@@ -20,7 +20,7 @@ class Response extends WebResponse
      */
     public function setStatusCodeByException($e)
     {
-        if ($e instanceof ValidationException) {
+        if ($e instanceof HttpValidationException) {
             $this->setStatusCode(400);
             return $this;
         }
