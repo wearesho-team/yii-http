@@ -62,8 +62,12 @@ class AccessControl extends Behavior
     public function checkAccess()
     {
         $user = call_user_func($this->user);
-        if (!$user instanceof IdentityInterface && !in_array('?', $this->permissions)) {
-            throw new ForbiddenHttpException(null, 1);
+        if (!$user instanceof IdentityInterface) {
+            if (in_array('?', $this->permissions)) {
+                return;
+            } else {
+                throw new ForbiddenHttpException(null, 1);
+            }
         }
         foreach ((array)$this->permissions as $permission) {
             if ($this->manager->checkAccess($user->getId(), $permission)) {
