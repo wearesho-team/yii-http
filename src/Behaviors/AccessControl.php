@@ -50,7 +50,7 @@ class AccessControl extends Behavior
     {
         parent::init();
         if (!is_callable($this->user)) {
-            $this->user = function (): IdentityInterface {
+            $this->user = function (): ?IdentityInterface {
                 return \Yii::$app->user->getIdentity();
             };
         }
@@ -61,13 +61,15 @@ class AccessControl extends Behavior
      */
     public function checkAccess()
     {
-        /** @var IdentityInterface $user */
         $user = call_user_func($this->user);
+        if (!$user instanceof IdentityInterface && !in_array('?', $this->permissions)) {
+            throw new ForbiddenHttpException(null, 1);
+        }
         foreach ((array)$this->permissions as $permission) {
             if ($this->manager->checkAccess($user->getId(), $permission)) {
                 return;
             }
         }
-        throw new ForbiddenHttpException();
+        throw new ForbiddenHttpException(null, 2);
     }
 }
