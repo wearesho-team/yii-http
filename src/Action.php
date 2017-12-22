@@ -5,9 +5,9 @@ namespace Wearesho\Yii\Http;
 use yii\base\InvalidConfigException;
 use yii\base\Action as BaseAction;
 
+use yii\di\Instance;
 use yii\web\NotFoundHttpException;
 use yii\web\Response as WebResponse;
-
 
 /**
  * Class Action
@@ -34,8 +34,11 @@ class Action extends BaseAction
 
     /**
      * @return WebResponse
+     *
      * @throws InvalidConfigException
      * @throws NotFoundHttpException
+     *
+     * @throws Exceptions\HttpValidationException
      */
     public function run()
     {
@@ -49,10 +52,8 @@ class Action extends BaseAction
             throw new NotFoundHttpException();
         }
 
-        $panel = \Yii::$container->get($className);
-        if (!$panel instanceof Panel) {
-            throw new InvalidConfigException("{$panel} class must extend AbstractPanel");
-        }
+        /** @var Panel $panel */
+        $panel = Instance::ensure($className, Panel::class);
 
         return $panel->getResponse();
     }
