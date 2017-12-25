@@ -29,7 +29,11 @@ abstract class Panel extends Model
      * @param Response $response
      * @param array $config
      */
-    public function __construct(Request $request, Response $response, array $config = [])
+    public function __construct(
+        Request $request,
+        Response $response,
+        array $config = []
+    )
     {
         parent::__construct($config);
 
