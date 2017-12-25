@@ -1,12 +1,64 @@
-## Yii2 Http
+# Yii2 Http
 
 Alternative work with HTTP
 
-### Contents
-#### GetParamsBehavior [[Example]](./tests/Behaviors/GetParamsBehaviorTest.php)
+## Contents
+
+### View
+Implement your view
+```php
+<?php
+
+namespace App\Views;
+
+use Wearesho\Yii\Http\View;
+
+class EntityView extends View {
+    /** @var string  */
+    protected $foo;
+    
+    /** @var \SomeClass  */
+    protected $dependency;
+    
+    public function __construct(string $foo, \SomeClass $dependency) {
+        $this->foo = $foo;
+        $this->dependency = $dependency;
+    }
+    
+    protected function renderInstantiated(): array {
+        return [
+            'bar' => $this->foo,
+        ];
+    }
+}
+
+```
+then use it
+```php
+<?php
+
+use App\Views\EntityView;
+
+$argument = 'foo';
+$output = EntityView::render($argument);
+
+print_r($output);
+
+/**
+ * Will output: 
+ * 
+ * Array
+ * (
+ *   [bar] => foo
+ * )
+ */
+
+```
+
+### GetParamsBehavior [[Example]](./tests/Behaviors/GetParamsBehaviorTest.php)
 Fills Panel attributes from \yii\web\Request::get().
 
-### Installation
+## Installation
 ```bash
 composer require wearesho-team/yii-tokens
 ```
@@ -24,9 +76,9 @@ Add to your DI container:
 \Yii::$container->setSingleton(\yii\db\Connection::class);
 ```
 
-### TODO
+## TODO
 1. Documentation
 2. Tests
 
-### LICENSE
+## LICENSE
 Unlicensed
