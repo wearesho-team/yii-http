@@ -46,15 +46,35 @@ print_r($output);
 
 /**
  * Will output: 
- * 
  * Array
- * (
- *   [bar] => foo
- * )
+  (
+      [bar] => 1
+  )
  */
+// or if you have multiple data
+$arguments = [
+    '1',
+    '2',
+];
+$output = EntityView::multiple($arguments);
 
+/**
+ * Will output
+ * Array
+   (
+       [0] => Array
+           (
+               [bar] => 1
+           )
+   
+       [1] => Array
+           (
+               [bar] => 2
+           )
+   
+   )
+ */
 ```
-
 ### GetParamsBehavior [[Example]](./tests/Behaviors/GetParamsBehaviorTest.php)
 Fills Panel attributes from \yii\web\Request::get().
 

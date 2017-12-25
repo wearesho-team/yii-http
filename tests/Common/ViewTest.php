@@ -17,4 +17,13 @@ class ViewTest extends AbstractTestCase
         $output = ViewMock::render($expectedOutput);
         $this->assertEquals($expectedOutput, $output);
     }
+
+    public function testMultiple()
+    {
+        $item = [
+            mt_rand(),
+        ];
+        $output = ViewMock::multiple([$item, $item,]);
+        $this->assertEquals([$item, $item,], $output);
+    }
 }
