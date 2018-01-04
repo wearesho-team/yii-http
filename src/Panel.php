@@ -13,7 +13,6 @@ use yii\base\Controller as BaseController;
  */
 abstract class Panel extends Model
 {
-    const EVENT_ON_EXCEPTION = 'onException';
     const EVENT_BEFORE_VALIDATE = 'beforeValidate';
 
     /** @var  Request */
