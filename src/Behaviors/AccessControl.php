@@ -18,6 +18,10 @@ use yii\web\IdentityInterface;
  */
 class AccessControl extends Behavior
 {
+    const ROLE_DEFAULT = '@';
+    const ROLE_GUEST = '?';
+
+
     /** @var string|string[] */
     public $permissions;
 
@@ -62,18 +66,23 @@ class AccessControl extends Behavior
     public function checkAccess()
     {
         $user = call_user_func($this->user);
+
         if (!$user instanceof IdentityInterface) {
-            if (in_array('?', $this->permissions)) {
+            if (in_array(static::ROLE_GUEST, $this->permissions)) {
                 return;
             } else {
                 throw new ForbiddenHttpException(null, 1);
             }
+        } elseif (in_array(static::ROLE_DEFAULT, $this->permissions)) {
+            return;
         }
+
         foreach ((array)$this->permissions as $permission) {
             if ($this->manager->checkAccess($user->getId(), $permission)) {
                 return;
             }
         }
+
         throw new ForbiddenHttpException(null, 2);
     }
 }
