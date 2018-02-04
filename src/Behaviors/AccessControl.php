@@ -2,14 +2,17 @@
 
 namespace Wearesho\Yii\Http\Behaviors;
 
-use Wearesho\Yii\Http\Controller;
-
+use Wearesho\Yii\Http\Panel;
 use Wearesho\Yii\Http\Request;
+
 use yii\base\Action;
 use yii\base\Behavior;
 use yii\base\Module;
+
 use yii\di\Instance;
+
 use yii\filters\AccessRule;
+
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 use yii\web\UnauthorizedHttpException;
@@ -62,7 +65,7 @@ class AccessControl extends Behavior
     public function events()
     {
         return [
-            Controller::EVENT_BEFORE_ACTION => 'checkAccess',
+            Panel::EVENT_BEFORE_VALIDATE => 'checkAccess',
         ];
     }
 
