@@ -8,7 +8,8 @@
   ],
   "require": {
     "php": ">=7.1",
-    "yiisoft/yii2": "~2.0.13"
+    "yiisoft/yii2": "~2.0.13",
+    "horat1us/yii2-base": "^1.8.1"
   },
   "require-dev": {
     "phpunit/phpunit": "^6.3"
