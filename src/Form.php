@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Wearesho\Yii\Http;
 
 use yii\base\Controller as BaseController;

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Wearesho\Yii\Http\Behaviors;
-
 
 use Wearesho\Yii\Http\Panel;
 use yii\base\Behavior;

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Wearesho\Yii\Http\Tests\Behaviors;
-
 
 use Wearesho\Yii\Http\Behaviors\AccessControl;
 use Wearesho\Yii\Http\Exceptions\HttpValidationException;
@@ -11,11 +9,18 @@ use Wearesho\Yii\Http\Request;
 use Wearesho\Yii\Http\Response;
 use Wearesho\Yii\Http\Tests\AbstractTestCase;
 use yii\rbac\ManagerInterface;
+use yii\rbac\Permission;
 use yii\rbac\PhpManager;
 use yii\rbac\Role;
 use yii\web\ForbiddenHttpException;
 use yii\web\IdentityInterface;
+use yii\web\User;
 
+/**
+ * Class AccessControlTest
+ * @package Wearesho\Yii\Http\Tests\Behaviors
+ * @internal
+ */
 class AccessControlTest extends AbstractTestCase
 {
 
@@ -35,19 +40,6 @@ class AccessControlTest extends AbstractTestCase
     protected function setUp()
     {
         parent::setUp();
-
-        \Yii::$container->set(
-            ManagerInterface::class,
-            [
-                'class' => PhpManager::class,
-                'itemFile' => '@output/items.php',
-                'assignmentFile' => '@output/assignment.php',
-                'ruleFile' => '@output/rule.php',
-            ]
-        );
-
-        $this->manager = \Yii::$container->get(ManagerInterface::class);
-
 
         $this->user = new class(mt_rand(1, 100)) implements IdentityInterface
         {
@@ -83,7 +75,7 @@ class AccessControlTest extends AbstractTestCase
 
         $this->panelInstance = new class($this->user) extends Panel
         {
-
+            /** @var IdentityInterface */
             public $user;
 
             public function __construct(IdentityInterface &$user)
@@ -97,10 +89,14 @@ class AccessControlTest extends AbstractTestCase
                 return [
                     'access' => [
                         'class' => AccessControl::class,
-                        'permissions' => ['test'],
-                        'user' => function () {
-                            return $this->user;
-                        }
+                        'rules' => [[
+                            'roles' => ['test'],
+                        ]],
+                        'user' => [
+                            'class' => User::class,
+                            'identityClass' => get_class($this->user),
+                            'identity' => $this->user,
+                        ]
                     ],
                 ];
             }
@@ -114,7 +110,29 @@ class AccessControlTest extends AbstractTestCase
                 throw new \Exception("Method not implemented");
             }
         };
+    }
 
+    protected function appConfig(): array
+    {
+        $parentAppConfig = parent::appConfig();
+        \Yii::$container->set(
+            ManagerInterface::class,
+            [
+                'class' => PhpManager::class,
+                'itemFile' => '@output/items.php',
+                'assignmentFile' => '@output/assignment.php',
+                'ruleFile' => '@output/rule.php',
+            ]
+        );
+
+        $this->manager = \Yii::$container->get(ManagerInterface::class);
+        $config = [
+            'components' => [
+                'authManager' => $this->manager,
+            ],
+        ];
+
+        return array_merge($parentAppConfig, $config);
     }
 
     /**

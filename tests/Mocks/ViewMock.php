@@ -7,6 +7,7 @@ use Wearesho\Yii\Http\View;
 /**
  * Class ViewMock
  * @package Wearesho\Yii\Http\Tests\Mocks
+ * @internal
  */
 class ViewMock extends View
 {
