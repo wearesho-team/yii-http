@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Wearesho\Yii\Http;
 
 use yii\web\JsonParser;

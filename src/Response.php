@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Wearesho\Yii\Http;
 
 use Wearesho\Yii\Http\Exceptions\HttpValidationException;
