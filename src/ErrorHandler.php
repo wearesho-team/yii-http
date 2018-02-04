@@ -1,11 +1,9 @@
 <?php
 
-
 namespace Wearesho\Yii\Http;
 
 use Wearesho\Yii\Http\Exceptions\HttpValidationException;
 use yii\web\ErrorHandler as WebErrorHandler;
-
 
 /**
  * Class ErrorHandler

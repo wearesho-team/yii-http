@@ -1,12 +1,15 @@
 <?php
 
-
 namespace Wearesho\Yii\Http\Tests\Common;
-
 
 use Wearesho\Yii\Http\Tests\AbstractTestCase;
 use Wearesho\Yii\Http\Tests\Mocks\ViewMock;
 
+/**
+ * Class ViewTest
+ * @package Wearesho\Yii\Http\Tests\Common
+ * @internal
+ */
 class ViewTest extends AbstractTestCase
 {
     public function testRender()

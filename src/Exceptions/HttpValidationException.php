@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Wearesho\Yii\Http\Exceptions;
 
 use Throwable;
@@ -45,6 +44,7 @@ class HttpValidationException extends UserException
     /**
      * @param Model $model
      * @return Model
+     * @throws static
      */
     public static function validateOrThrow(Model $model): Model
     {
@@ -57,6 +57,7 @@ class HttpValidationException extends UserException
     /**
      * @param ActiveRecordInterface $record
      * @return ActiveRecordInterface|ActiveRecord
+     * @throws static
      */
     public static function saveOrThrow(ActiveRecordInterface $record): ActiveRecordInterface
     {
@@ -70,6 +71,7 @@ class HttpValidationException extends UserException
      * @param string $attribute
      * @param string $error
      * @param Model $model
+     * @throws static
      */
     public static function addAndThrow(string $attribute, string $error, Model $model)
     {

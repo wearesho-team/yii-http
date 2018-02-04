@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Wearesho\Yii\Http;
-
 
 /**
  * Class View
@@ -26,3 +24,4 @@ abstract class View
 
     abstract protected function renderInstantiated(): array;
 }
+

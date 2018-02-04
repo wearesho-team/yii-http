@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Wearesho\Yii\Http\Tests\Behaviors;
-
 
 use Wearesho\Yii\Http\Behaviors\GetParamsBehavior;
 use Wearesho\Yii\Http\Panel;
@@ -13,6 +11,7 @@ use Wearesho\Yii\Http\Tests\AbstractTestCase;
 /**
  * Class GetParamsBehaviorTest
  * @package Wearesho\Yii\Http\Tests\Behaviors
+ * @internal
  */
 class GetParamsBehaviorTest extends AbstractTestCase
 {

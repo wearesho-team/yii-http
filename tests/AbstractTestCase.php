@@ -2,7 +2,6 @@
 
 namespace Wearesho\Yii\Http\Tests;
 
-
 use PHPUnit\Framework\TestCase;
 
 use yii\console\Application;
@@ -16,6 +15,7 @@ use yii\di\Container;
 /**
  * Class AbstractTestCase
  * @package Wearesho\Yii\Tests
+ * @internal
  */
 abstract class AbstractTestCase extends TestCase
 {
@@ -28,7 +28,21 @@ abstract class AbstractTestCase extends TestCase
         file_put_contents($_ENV['DB_PATH'], '');
         chmod($_ENV['DB_PATH'], 0755);
 
-        $config = [
+        \Yii::$container = new Container();
+        \Yii::$app = new Application($this->appConfig());
+    }
+
+    protected function tearDown()
+    {
+        parent::tearDown();
+
+        \Yii::$app = null;
+        \Yii::$container = null;
+    }
+
+    protected function appConfig(): array
+    {
+        return [
             'id' => 'yii-register-confirmation-test',
             'basePath' => dirname(__DIR__),
             'components' => [
@@ -38,16 +52,5 @@ abstract class AbstractTestCase extends TestCase
                 ],
             ],
         ];
-
-        \Yii::$container = new Container();
-        \Yii::$app = new Application($config);
-    }
-
-    protected function tearDown()
-    {
-        parent::tearDown();
-
-        \Yii::$app = null;
-        \Yii::$container = null;
     }
 }
