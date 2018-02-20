@@ -8,6 +8,7 @@ use yii\filters\auth\HttpBearerAuth;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
 
+use yii\rest\OptionsAction;
 use yii\web\Controller as WebController;
 
 /**
@@ -16,6 +17,30 @@ use yii\web\Controller as WebController;
  */
 class Controller extends WebController
 {
+    /**
+     * Declares external actions for the controller.
+     *
+     * For example,
+     *
+     * ```php
+     * return [
+     *     'action2' => [
+     *         'get' => \App\Http\Panel::class,
+     *         'post' => [
+     *              'class' => \App\Http\Form::class
+     *              'property' => 'value',
+     *         ],
+     *     ],
+     * ];
+     * ```
+     *
+     * [[\Yii::createObject()]] will be used later to create the requested action
+     * using the configuration provided here.
+     *
+     * @var array
+     */
+    public $actions = [];
+
     /**
      * @return array
      */
@@ -36,6 +61,15 @@ class Controller extends WebController
                 }, $this->actions()),
             ],
         ];
+    }
+
+    /**
+     * @see $actions
+     * @return array
+     */
+    public function actions()
+    {
+        return $this->actions;
     }
 
     /**
