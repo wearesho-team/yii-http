@@ -2,6 +2,7 @@
 
 namespace Wearesho\Yii\Http;
 
+use yii\base\ExitException;
 use yii\base\InlineAction;
 
 use yii\filters\auth\HttpBearerAuth;
@@ -96,5 +97,25 @@ class Controller extends WebController
         }
 
         return null;
+    }
+
+    /**
+     * @param $action
+     * @return bool
+     * @throws ExitException
+     * @throws \yii\web\BadRequestHttpException
+     */
+    public function beforeAction($action)
+    {
+        if (parent::beforeAction($action)) {
+            if (\Yii::$app->request->method === 'OPTIONS') {
+                \Yii::$app->response->send();
+                throw new ExitException();
+            }
+
+            return true;
+        }
+
+        return false;
     }
 }
