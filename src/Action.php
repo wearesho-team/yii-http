@@ -2,6 +2,10 @@
 
 namespace Wearesho\Yii\Http;
 
+use Wearesho\Yii\Http\Rest\DeleteForm;
+use Wearesho\Yii\Http\Rest\GetPanel;
+use Wearesho\Yii\Http\Rest\PostForm;
+use Wearesho\Yii\Http\Rest\PutForm;
 use yii\base\InvalidConfigException;
 use yii\base\Action as BaseAction;
 
@@ -56,5 +60,31 @@ class Action extends BaseAction
         $panel = Instance::ensure($className, Panel::class);
 
         return $panel->getResponse();
+    }
+
+    public static function rest(string $modelClass): array
+    {
+        return [
+            'get' => [
+                'class' => GetPanel::class,
+                'modelClass' => $modelClass,
+            ],
+            'post' => [
+                'class' => PostForm::class,
+                'modelClass' => $modelClass,
+            ],
+            'put' => [
+                'class' => PutForm::class,
+                'modelClass' => $modelClass,
+            ],
+            'patch' => [
+                'class' => PatchForm::class,
+                'modelClass' => $modelClass,
+            ],
+            'delete' => [
+                'class' => DeleteForm::class,
+                'modelClass' => $modelClass,
+            ],
+        ];
     }
 }
