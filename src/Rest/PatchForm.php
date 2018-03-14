@@ -3,7 +3,7 @@
 namespace Wearesho\Yii\Http\Rest;
 
 use Wearesho\Yii\Http\Exceptions\HttpValidationException;
-use Wearesho\Yii\Http\Rest\RestPanelTrait;
+use Wearesho\Yii\Http\Form;
 
 /**
  * Class PatchPanel
