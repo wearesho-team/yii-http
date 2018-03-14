@@ -64,12 +64,12 @@ trait RestPanelTrait
 
         $query->andWhere(['=', $primaryKey[0], $this->id]);
 
-        if (is_array($this->filter)) {
-            $query->andWhere($this->filter);
-        } elseif (is_callable($this->filter)) {
+        if ($this->filter instanceof \Closure || is_array($this->filter) && is_callable($this->filter)) {
             call_user_func($this->filter, $query);
+        } elseif (is_array($this->filter)) {
+            $query->andWhere($this->filter);
         } elseif (!is_null($this->filter)) {
-            throw new InvalidConfigException("Filter should array be or callable that receives query");
+            throw new InvalidConfigException("Filter should be query array or callable that receives query");
         }
 
         return $query;

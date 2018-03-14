@@ -29,6 +29,6 @@ class PostForm extends Form
 
         HttpValidationException::saveOrThrow($record);
 
-        return $record->toArray($record->activeAttributes());
+        return $record->toArray();
     }
 }
