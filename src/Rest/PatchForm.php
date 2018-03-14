@@ -24,6 +24,6 @@ class PatchForm extends Form
 
         HttpValidationException::saveOrThrow($this->record);
 
-        return $this->record->toArray($this->record->activeAttributes());
+        return $this->record->toArray();
     }
 }
