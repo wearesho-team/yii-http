@@ -68,8 +68,8 @@ trait RestPanelTrait
             $query->andWhere($this->filter);
         } elseif (is_callable($this->filter)) {
             call_user_func($this->filter, $query);
-        } else {
-            throw new InvalidConfigException("Filter should array or callable that receives query");
+        } elseif (!is_null($this->filter)) {
+            throw new InvalidConfigException("Filter should array be or callable that receives query");
         }
 
         return $query;
