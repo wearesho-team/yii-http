@@ -9,6 +9,7 @@ use yii\filters\auth\HttpBearerAuth;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
 
+use yii\helpers\ArrayHelper;
 use yii\rest\OptionsAction;
 use yii\web\Controller as WebController;
 
@@ -43,11 +44,17 @@ class Controller extends WebController
     public $actions = [];
 
     /**
+     * @var array
+     * @see behaviors()
+     */
+    public $behaviors = [];
+
+    /**
      * @return array
      */
     public function behaviors()
     {
-        return [
+        return ArrayHelper::merge([
             'authenticator' => [
                 'class' => HttpBearerAuth::class,
                 'optional' => array_keys($this->actions()),
@@ -61,7 +68,7 @@ class Controller extends WebController
                     return array_merge(['OPTIONS'], array_keys($panels));
                 }, $this->actions()),
             ],
-        ];
+        ], $this->behaviors);
     }
 
     /**
