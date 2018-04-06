@@ -18,7 +18,5 @@ class PutFormTest extends AbstractTestCase
 
         $scenarios = $form->scenarios();
         $this->assertArrayHasKey(RecordMock::SCENARIO_TEST, $scenarios);
-
-        $this->assertTrue(true);
     }
 }
