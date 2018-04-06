@@ -12,6 +12,8 @@ use yii\db\ActiveRecord;
  */
 class PostForm extends Form
 {
+    use ScenarioTrait;
+
     /** @var string ActiveRecord to be created */
     public $modelClass;
 
