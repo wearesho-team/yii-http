@@ -27,8 +27,7 @@ abstract class Form extends Panel
         Response $response,
         Connection $connection,
         array $config = []
-    )
-    {
+    ) {
         parent::__construct($request, $response, $config);
 
         $this->connection = $connection;
@@ -40,7 +39,7 @@ abstract class Form extends Panel
      */
     public function getResponse(): Response
     {
-        return $this->connection->transaction(function() {
+        return $this->connection->transaction(function () {
             return parent::getResponse();
         });
     }

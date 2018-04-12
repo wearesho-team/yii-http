@@ -1,4 +1,8 @@
 # Yii2 Http
+[![Latest Stable Version](https://poser.pugx.org/wearesho-team/yii-http/v/stable.png)](https://packagist.org/packages/wearesho-team/yii-http)
+[![Total Downloads](https://poser.pugx.org/wearesho-team/yii-http/downloads.png)](https://packagist.org/packages/wearesho-team/yii-http)
+[![Build Status](https://travis-ci.org/wearesho-team/yii-http.svg?branch=master)](https://travis-ci.org/wearesho-team/yii-http)
+[![codecov](https://codecov.io/gh/wearesho-team/yii-http/branch/master/graph/badge.svg)](https://codecov.io/gh/wearesho-team/yii-http)
 
 Alternative work with HTTP
 
@@ -80,7 +84,7 @@ Fills Panel attributes from \yii\web\Request::get().
 
 ## Installation
 ```bash
-composer require wearesho-team/yii-tokens
+composer require wearesho-team/yii-http
 ```
 Add to your DI container:
 ```php
@@ -101,4 +105,4 @@ Add to your DI container:
 2. Tests
 
 ## LICENSE
-Unlicensed
+MIT

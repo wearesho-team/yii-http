@@ -29,8 +29,7 @@ abstract class Panel extends Model
         Request $request,
         Response $response,
         array $config = []
-    )
-    {
+    ) {
         parent::__construct($config);
 
         $this->request = $request;

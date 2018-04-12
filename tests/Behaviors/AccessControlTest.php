@@ -89,9 +89,11 @@ class AccessControlTest extends AbstractTestCase
                 return [
                     'access' => [
                         'class' => AccessControl::class,
-                        'rules' => [[
-                            'roles' => ['test'],
-                        ]],
+                        'rules' => [
+                            [
+                                'roles' => ['test'],
+                            ]
+                        ],
                         'user' => [
                             'class' => User::class,
                             'identityClass' => get_class($this->user),
@@ -140,10 +142,10 @@ class AccessControlTest extends AbstractTestCase
      */
     public function testCorrect()
     {
-        $role = $this->manager->createRole('test');
+        $role = $this->getRole('test');
 
-        $this->manager->add($role);
-        $this->manager->assign($role, $this->user->getId());
+        $this->manager->getAssignment('test', $this->user->getId())
+        || $this->manager->assign($role, $this->user->getId());
 
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage("Method not implemented");
@@ -161,5 +163,17 @@ class AccessControlTest extends AbstractTestCase
         $this->expectException(ForbiddenHttpException::class);
 
         $this->panelInstance->getResponse();
+    }
+
+    protected function getRole(string $roleName)
+    {
+        $role = $this->manager->getRole($roleName);
+
+        if (!$role) {
+            $role = $this->manager->createRole($roleName);
+            $this->manager->add($role);
+        }
+
+        return $role;
     }
 }

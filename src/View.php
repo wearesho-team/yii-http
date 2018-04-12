@@ -24,4 +24,3 @@ abstract class View
 
     abstract protected function renderInstantiated(): array;
 }
-
