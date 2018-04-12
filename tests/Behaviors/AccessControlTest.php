@@ -84,6 +84,11 @@ class AccessControlTest extends AbstractTestCase
                 $this->user = &$user;
             }
 
+            public function formName()
+            {
+                return 'AnonymousForm';
+            }
+
             public function behaviors()
             {
                 return [
