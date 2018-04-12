@@ -11,7 +11,7 @@ use Wearesho\Yii\Http\Form;
  */
 class PutForm extends Form
 {
-    use RestPanelTrait;
+    use RestPanelTrait, ScenarioTrait;
 
     /**
      * @throws HttpValidationException
