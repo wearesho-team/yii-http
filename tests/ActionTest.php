@@ -6,30 +6,43 @@ use Horat1us\Yii\Helpers\ArrayHelper;
 use PHPUnit\Framework\TestResult;
 use Wearesho\Yii\Http\Action;
 use Wearesho\Yii\Http\Controller;
+use Wearesho\Yii\Http\Rest\PostForm;
+use yii;
 use yii\base\ModelEvent;
 use yii\base\Module;
-use yii\web\Request;
-use yii\web\NotFoundHttpException;
 
 class ActionTest extends AbstractTestCase
 {
+    /** @var Action */
     protected $action;
 
     public function setUp()
     {
         parent::setUp();
-        $this->action = \Yii::$container->get(Action::class, [
-            "id_action",
-            new Controller("id_controller", new Module("id_string")),
-            []
-        ]);
+        $this->action = \Yii::$container->get(
+            Action::class,
+            [
+                "id_action",
+                \Yii::$container->get(Controller::class, [
+                    "id_controller",
+                    \Yii::$container->get(Module::class, ["id_module"])
+                ]),
+                [
+                    "post" => [
+                        'class' => PostForm::class
+                    ]
+                ]
+            ]
+        );
     }
 
     protected function appConfig(): array
     {
         return ArrayHelper::merge(parent::appConfig(), [
             'components' => [
-                'request' => \Wearesho\Yii\Http\Request::class,
+                'request' => [
+                    'class' => \Wearesho\Yii\Http\Request::class,
+                ],
             ]
         ]);
     }
@@ -76,13 +89,19 @@ class ActionTest extends AbstractTestCase
         );
     }
 
-    public function testRun()
+    /**
+     * @expectedException yii\base\InvalidConfigException
+     * @throws yii\base\InvalidConfigException
+     */
+    public function testRunOptions()
     {
-        $runResult = $this->action->run();
-
+        $_SERVER['REQUEST_METHOD'] = "OPTIONS";
         $this->assertEquals(
-            new TestResult(),
-            $runResult
+            null,
+            $this->action->run()
         );
+
+        $_SERVER['REQUEST_METHOD'] = "POST";
+        $this->action->run();
     }
 }
