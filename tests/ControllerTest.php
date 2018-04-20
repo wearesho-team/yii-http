@@ -4,6 +4,7 @@ namespace Wearesho\Yii\Http\Tests;
 
 use Wearesho\Yii\Http\Controller;
 use Wearesho\Yii\Http\Rest;
+use yii\base\Event;
 use yii\base\Module;
 
 class ControllerTest extends AbstractTestCase
@@ -16,6 +17,15 @@ class ControllerTest extends AbstractTestCase
         parent::setUp();
 
         $this->controller= new Controller("id_controller", new Module("id_module"));
+
+        $this->controller->actions = [
+            'get' => [
+
+            ],
+            'actionPost' => [
+                Rest\PostForm::class,
+            ],
+        ];
     }
 
     protected function appConfig(): array
@@ -36,14 +46,25 @@ class ControllerTest extends AbstractTestCase
         $this->assertEquals([
             'authenticator' => [
                 'class' => 'yii\filters\auth\HttpBearerAuth',
-                'optional' => []
+                'optional' => [
+                    0 => 'get',
+                    1 => 'actionPost'
+                ]
             ],
             'corsFilter' => [
                 'class' => 'yii\filters\Cors'
             ],
             'verbs' => [
                 'class' => 'yii\filters\VerbFilter',
-                'actions' => []
+                'actions' => [
+                    'get' => [
+                        0 => 'OPTIONS'
+                    ],
+                    'actionPost' => [
+                        0 => 'OPTIONS',
+                        1 => 0
+                    ]
+                ]
             ],
         ], $this->controller->behaviors());
     }
@@ -57,13 +78,17 @@ class ControllerTest extends AbstractTestCase
                 {
                     return [];
                 }
+
+                function actionPost()
+                {
+                }
             };
 
         $localController->actions = [
             'get' => [
 
             ],
-            'post' => [
+            'actionPost' => [
                 Rest\PostForm::class,
             ],
         ];
@@ -90,10 +115,13 @@ class ControllerTest extends AbstractTestCase
 
         $localController->actions = [
             'get' => [
-
+                Rest\GetPanel::class,
             ],
             'post' => [
                 Rest\PostForm::class,
+            ],
+            'delete' => [
+                Rest\DeleteForm::class,
             ],
         ];
 
@@ -105,6 +133,7 @@ class ControllerTest extends AbstractTestCase
 
         $this->assertEquals(true, $beforeAction);
     }
+
 
     public function testWithoutActionMap()
     {
@@ -145,10 +174,56 @@ class ControllerTest extends AbstractTestCase
 
         $this->assertEquals(true, $beforeAction);
     }
-    /*
-          public function testCreateAction()
-          {
 
-          }
-      */
+    public function testBeforeActionFalse()
+    {
+        $localController =
+            new class("id_controller", new Module("id_module")) extends Controller
+            {
+                function behaviors(): array
+                {
+                    return [];
+                }
+
+            };
+
+        $localController->on(
+            \yii\base\Controller::EVENT_BEFORE_ACTION,
+            function (Event $event) {
+                $event->isValid = false;
+            }
+        );
+
+        $action = $localController->createAction("weq");
+
+        $beforeAction = $localController->beforeAction($action);
+
+        $this->assertEquals(false, $beforeAction);
+    }
+
+    /**
+     * @throws \yii\base\ExitException
+     * @throws \yii\web\BadRequestHttpException
+     * @expectedException \yii\base\ExitException
+     */
+    public function testBeforeActionTrue()
+    {
+        $localController =
+            new class("id_controller", new Module("id_module")) extends Controller
+            {
+                function behaviors(): array
+                {
+                    return [];
+                }
+            };
+
+        $_REQUEST = new \yii\web\Request();
+        $_SERVER["REQUEST_METHOD"] = "OPTIONS";
+
+        $action = $localController->createAction("weq");
+
+        $beforeAction = $localController->beforeAction($action);
+
+        $this->assertEquals(true, $beforeAction);
+    }
 }
