@@ -89,10 +89,6 @@ class ActionTest extends AbstractTestCase
         );
     }
 
-    /**
-     * @expectedException yii\base\InvalidConfigException
-     * @throws yii\base\InvalidConfigException
-     */
     public function testRunOptions()
     {
         $_SERVER['REQUEST_METHOD'] = "OPTIONS";
@@ -100,7 +96,14 @@ class ActionTest extends AbstractTestCase
             null,
             $this->action->run()
         );
+    }
 
+    /**
+     * @expectedException yii\base\InvalidConfigException
+     * @throws yii\base\InvalidConfigException
+     */
+    public function testRunPost()
+    {
         $_SERVER['REQUEST_METHOD'] = "POST";
         $this->action->run();
     }
