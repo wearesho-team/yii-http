@@ -13,27 +13,24 @@ class AccessRuleTest extends AbstractTestCase
 {
     public function testAllows()
     {
-        $object = new AccessRule([
-        ]);
-        $object->permissions = function () {
+        $accessRule1 = new AccessRule();
+        $accessRule1->permissions = function () {
             return [];
         };
 
-
-        $this->assertEquals(
-            null,
-            $object->allows(
+        $this->assertFalse(
+            $accessRule1->allows(
                 new Action(
-                    "id_action",
+                    "oneAction",
                     new Controller(
-                        "is_controller",
-                        new Module("id_module")
+                        "oneController",
+                        new Module("oneModule")
                     ),
                     []
                 ),
                 new User(
                     [
-                        'identityClass' => "",
+                        'identityClass' => "AndrewClass",
                     ]
                 ),
                 new Request([])
