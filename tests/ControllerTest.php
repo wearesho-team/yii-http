@@ -93,8 +93,6 @@ class ControllerTest extends AbstractTestCase
             ],
         ];
 
-        $_REQUEST = new \yii\web\Request();
-
         $action = $localController->createAction("post");
 
         $beforeAction = $localController->beforeAction($action);
@@ -125,8 +123,6 @@ class ControllerTest extends AbstractTestCase
             ],
         ];
 
-        $_REQUEST = new \yii\web\Request();
-
         $action = $localController->createAction("post");
 
         $beforeAction = $localController->beforeAction($action);
@@ -146,8 +142,6 @@ class ControllerTest extends AbstractTestCase
                 }
             };
 
-        $_REQUEST = new \yii\web\Request();
-
         $action = $localController->createAction("post");
 
         $beforeAction = $localController->beforeAction($action);
@@ -165,8 +159,6 @@ class ControllerTest extends AbstractTestCase
                     return [];
                 }
             };
-
-        $_REQUEST = new \yii\web\Request();
 
         $action = $localController->createAction("");
 
@@ -217,7 +209,6 @@ class ControllerTest extends AbstractTestCase
                 }
             };
 
-        $_REQUEST = new \yii\web\Request();
         $_SERVER["REQUEST_METHOD"] = "OPTIONS";
 
         $action = $localController->createAction("weq");
