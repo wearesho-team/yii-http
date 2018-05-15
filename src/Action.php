@@ -4,6 +4,7 @@ namespace Wearesho\Yii\Http;
 
 use Wearesho\Yii\Http\Rest\DeleteForm;
 use Wearesho\Yii\Http\Rest\GetPanel;
+use Wearesho\Yii\Http\Rest\PatchForm;
 use Wearesho\Yii\Http\Rest\PostForm;
 use Wearesho\Yii\Http\Rest\PutForm;
 use yii\base\InvalidConfigException;
@@ -62,9 +63,9 @@ class Action extends BaseAction
         return $panel->getResponse();
     }
 
-    public static function rest(string $modelClass): array
+    public static function rest(string $modelClass, array $methods = ['get', 'post', 'put', 'patch', 'delete',]): array
     {
-        return [
+        $actions = [
             'get' => [
                 'class' => GetPanel::class,
                 'modelClass' => $modelClass,
@@ -86,5 +87,9 @@ class Action extends BaseAction
                 'modelClass' => $modelClass,
             ],
         ];
+
+        return array_filter($actions, function ($method) use ($methods) {
+            return in_array($method, $methods);
+        }, ARRAY_FILTER_USE_KEY);
     }
 }
