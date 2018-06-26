@@ -8,7 +8,6 @@ use yii\di;
 use yii\web;
 use yii\filters;
 
-
 /**
  * Class AccessControl
  * @package Wearesho\Yii\Http\Behaviors
