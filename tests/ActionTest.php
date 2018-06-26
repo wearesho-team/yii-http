@@ -11,12 +11,16 @@ use yii;
 use yii\base\ModelEvent;
 use yii\base\Module;
 
+/**
+ * Class ActionTest
+ * @package Wearesho\Yii\Http\Tests
+ */
 class ActionTest extends AbstractTestCase
 {
     /** @var Action */
     protected $action;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->action = \Yii::$container->get(
@@ -47,27 +51,27 @@ class ActionTest extends AbstractTestCase
         ]);
     }
 
-    public function testRest()
+    public function testRest(): void
     {
         $this->assertEquals(
             [
-                "get" => [
+                'get' => [
                     'class' => 'Wearesho\Yii\Http\Rest\GetPanel',
                     'modelClass' => 'yii\base\ModelEvent'
                 ],
-                "post" => [
+                'post' => [
                     'class' => 'Wearesho\Yii\Http\Rest\PostForm',
                     'modelClass' => 'yii\base\ModelEvent'
                 ],
-                "put" => [
+                'put' => [
                     'class' => 'Wearesho\Yii\Http\Rest\PutForm',
                     'modelClass' => 'yii\base\ModelEvent'
                 ],
-                "patch" => [
-                    'class' => 'Wearesho\Yii\Http\PatchForm',
+                'patch' => [
+                    'class' => 'Wearesho\Yii\Http\Rest\PatchForm',
                     'modelClass' => 'yii\base\ModelEvent'
                 ],
-                "delete" => [
+                'delete' => [
                     'class' => 'Wearesho\Yii\Http\Rest\DeleteForm',
                     'modelClass' => 'yii\base\ModelEvent'
                 ],
@@ -79,7 +83,7 @@ class ActionTest extends AbstractTestCase
     /**
      * @expectedException yii\web\NotFoundHttpException
      */
-    public function testRunException()
+    public function testRunException(): void
     {
         $runResult = $this->action->run();
 
@@ -89,7 +93,7 @@ class ActionTest extends AbstractTestCase
         );
     }
 
-    public function testRunOptions()
+    public function testRunOptions(): void
     {
         $_SERVER['REQUEST_METHOD'] = "OPTIONS";
         $this->assertEquals(
@@ -100,9 +104,8 @@ class ActionTest extends AbstractTestCase
 
     /**
      * @expectedException yii\base\InvalidConfigException
-     * @throws yii\base\InvalidConfigException
      */
-    public function testRunPost()
+    public function testRunPost(): void
     {
         $_SERVER['REQUEST_METHOD'] = "POST";
         $this->action->run();
