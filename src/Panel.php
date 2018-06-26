@@ -3,14 +3,13 @@
 namespace Wearesho\Yii\Http;
 
 use Wearesho\Yii\Http\Exceptions\HttpValidationException;
-use yii\base\Model;
-use yii\base\Controller as BaseController;
+use yii\base;
 
 /**
  * Class Panel
  * @package Wearesho\Yii\Http
  */
-abstract class Panel extends Model
+abstract class Panel extends base\Model
 {
     /** @var  Request */
     protected $request;
@@ -37,19 +36,21 @@ abstract class Panel extends Model
     }
 
     /**
-     * @throws HttpValidationException
      * @return Response
+     * @throws HttpValidationException
+     * @throws base\InvalidConfigException
      */
     public function getResponse(): Response
     {
         $this->response->format = Response::FORMAT_JSON;
 
         $this->load($this->request->getBodyParams());
+        /** @noinspection PhpUnhandledExceptionInspection HttpValidationException thrown */
         HttpValidationException::validateOrThrow($this);
 
-        $this->trigger(BaseController::EVENT_BEFORE_ACTION);
+        $this->trigger(base\Controller::EVENT_BEFORE_ACTION);
         $this->response->data = $this->generateResponse();
-        $this->trigger(BaseController::EVENT_AFTER_ACTION);
+        $this->trigger(base\Controller::EVENT_AFTER_ACTION);
 
         return $this->response;
     }

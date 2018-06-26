@@ -2,22 +2,16 @@
 
 namespace Wearesho\Yii\Http;
 
-use yii\base\ExitException;
-use yii\base\InlineAction;
-
-use yii\filters\auth\HttpBearerAuth;
-use yii\filters\Cors;
-use yii\filters\VerbFilter;
-
+use yii\base;
+use yii\filters;
 use yii\helpers\ArrayHelper;
-use yii\rest\OptionsAction;
-use yii\web\Controller as WebController;
+use yii\web;
 
 /**
  * Class Controller
  * @package Wearesho\Yii\Http
  */
-class Controller extends WebController
+class Controller extends web\Controller
 {
     /**
      * Declares external actions for the controller.
@@ -56,14 +50,14 @@ class Controller extends WebController
     {
         return ArrayHelper::merge([
             'authenticator' => [
-                'class' => HttpBearerAuth::class,
+                'class' => filters\auth\HttpBearerAuth::class,
                 'optional' => array_keys($this->actions()),
             ],
             'corsFilter' => [
-                'class' => Cors::class,
+                'class' => filters\Cors::class,
             ],
             'verbs' => [
-                'class' => VerbFilter::class,
+                'class' => filters\VerbFilter::class,
                 'actions' => array_map(function ($panels) {
                     return array_merge(['OPTIONS'], array_keys($panels));
                 }, $this->actions()),
@@ -82,7 +76,8 @@ class Controller extends WebController
 
     /**
      * @param string $id
-     * @return Action|null|InlineAction
+     * @return base\Action|null|base\InlineAction
+     * @throws \ReflectionException
      */
     public function createAction($id)
     {
@@ -98,7 +93,7 @@ class Controller extends WebController
             if (method_exists($this, $methodName)) {
                 $method = new \ReflectionMethod($this, $methodName);
                 if ($method->isPublic() && $method->getName() === $methodName) {
-                    return new InlineAction($id, $this, $methodName);
+                    return new base\InlineAction($id, $this, $methodName);
                 }
             }
         }
@@ -109,7 +104,7 @@ class Controller extends WebController
     /**
      * @param $action
      * @return bool
-     * @throws ExitException
+     * @throws base\ExitException
      * @throws \yii\web\BadRequestHttpException
      */
     public function beforeAction($action)
@@ -117,7 +112,7 @@ class Controller extends WebController
         if (parent::beforeAction($action)) {
             if (\Yii::$app->request->method === 'OPTIONS') {
                 \Yii::$app->response->send();
-                throw new ExitException();
+                throw new base\ExitException();
             }
 
             return true;
