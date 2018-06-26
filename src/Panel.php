@@ -45,7 +45,7 @@ abstract class Panel extends base\Model
         $this->response->format = Response::FORMAT_JSON;
 
         $this->load($this->request->getBodyParams());
-        /** @noinspection PhpUnhandledExceptionInspection HttpValidationException throws instead of ModelExceptionInterface */
+        /** @noinspection PhpUnhandledExceptionInspection HttpValidationException thrown */
         HttpValidationException::validateOrThrow($this);
 
         $this->trigger(base\Controller::EVENT_BEFORE_ACTION);

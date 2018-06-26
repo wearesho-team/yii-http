@@ -24,7 +24,6 @@ class ErrorHandler extends WebErrorHandler
             && ($exception instanceof HttpValidationException || YII_DEBUG);
 
         if ($shouldDisplayErrors) {
-
             $model = $exception->getModel();
             if (YII_DEBUG) {
                 $exceptionArray['values'] = $model->getAttributes();
