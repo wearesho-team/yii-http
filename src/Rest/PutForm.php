@@ -11,7 +11,7 @@ use Wearesho\Yii\Http\Form;
  */
 class PutForm extends Form
 {
-    use RestPanelTrait, ScenarioTrait;
+    use RestPanelTrait, ScenarioTrait, ResponseConfigurable;
 
     /**
      * @throws HttpValidationException
@@ -28,6 +28,6 @@ class PutForm extends Form
 
         HttpValidationException::saveOrThrow($this->record);
 
-        return $this->record->toArray();
+        return $this->convert($this->record);
     }
 }
