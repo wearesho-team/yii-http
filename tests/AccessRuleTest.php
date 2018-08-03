@@ -7,6 +7,12 @@ use Wearesho\Yii\Http;
 use yii\base;
 use yii\web;
 
+/**
+ * Class AccessRuleTest
+ * @package Wearesho\Yii\Http\Tests
+ *
+ * @internal
+ */
 class AccessRuleTest extends AbstractTestCase
 {
     /** @var Http\AccessRule */
