@@ -69,13 +69,7 @@ class AccessRuleTest extends AbstractTestCase
     {
         $this->setRoleGuest();
         $this->setIdentityUser();
-
-        $this->access = new Http\AccessRule([
-            'allow' => false,
-            'permissions' => [
-                static::ROLE_GUEST
-            ]
-        ]);
+        $this->setAccess([static::ROLE_GUEST,], false);
 
         $this->assertFalse(
             $this->access->allows(
@@ -90,13 +84,9 @@ class AccessRuleTest extends AbstractTestCase
     {
         $this->setRoleAdmin();
         $this->setIdentityUser();
-
-        $this->access = new Http\AccessRule([
-            'allow' => true,
-            'permissions' => [
-                static::ROLE_ADMIN,
-                static::ROLE_GUEST
-            ]
+        $this->setAccess([
+            static::ROLE_ADMIN,
+            static::ROLE_GUEST
         ]);
 
         $this->assertTrue(
@@ -112,13 +102,7 @@ class AccessRuleTest extends AbstractTestCase
     {
         $this->setRoleAdmin();
         $this->setIdentityUser();
-
-        $this->access = new Http\AccessRule([
-            'allow' => true,
-            'permissions' => [
-                static::ROLE_GUEST
-            ]
-        ]);
+        $this->setAccess([static::ROLE_GUEST,]);
 
         $this->assertNull(
             $this->access->allows(
@@ -133,16 +117,12 @@ class AccessRuleTest extends AbstractTestCase
     {
         $this->setRoleAdmin();
         $this->setIdentityUser();
-
-        $this->access = new Http\AccessRule([
-            'allow' => true,
-            'permissions' => function (): array {
-                return [
-                    static::ROLE_ADMIN,
-                    static::ROLE_GUEST
-                ];
-            }
-        ]);
+        $this->setAccess(function (): array {
+            return [
+                static::ROLE_ADMIN,
+                static::ROLE_GUEST
+            ];
+        });
 
         $this->assertTrue(
             $this->access->allows(
@@ -175,6 +155,14 @@ class AccessRuleTest extends AbstractTestCase
         /** @noinspection PhpUnhandledExceptionInspection */
         static::$authManager->assign($this->role, $this->userMock->getId());
         \Yii::$app->user->setIdentity($this->userMock);
+    }
+
+    protected function setAccess($permissions, bool $allow = true): void
+    {
+        $this->access = new Http\AccessRule([
+            'allow' => $allow,
+            'permissions' => $permissions
+        ]);
     }
 
     protected function tearDown(): void
