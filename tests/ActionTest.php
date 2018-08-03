@@ -40,7 +40,7 @@ class ActionTest extends AbstractTestCase
         );
     }
 
-    protected function appConfig(): array
+    protected static function appConfig(): array
     {
         return ArrayHelper::merge(parent::appConfig(), [
             'components' => [
