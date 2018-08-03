@@ -3,13 +3,13 @@
 namespace Wearesho\Yii\Http\Tests;
 
 use Horat1us\Yii\Helpers\ArrayHelper;
+
 use PHPUnit\Framework\TestResult;
-use Wearesho\Yii\Http\Action;
-use Wearesho\Yii\Http\Controller;
-use Wearesho\Yii\Http\Rest\PostForm;
+
+use Wearesho\Yii\Http;
+
 use yii;
-use yii\base\ModelEvent;
-use yii\base\Module;
+use yii\base;
 
 /**
  * Class ActionTest
@@ -17,35 +17,37 @@ use yii\base\Module;
  */
 class ActionTest extends AbstractTestCase
 {
-    /** @var Action */
+    /** @var Http\Action */
     protected $action;
 
     public function setUp(): void
     {
         parent::setUp();
+
+        /** @noinspection PhpUnhandledExceptionInspection */
         $this->action = \Yii::$container->get(
-            Action::class,
+            Http\Action::class,
             [
                 "id_action",
-                \Yii::$container->get(Controller::class, [
+                \Yii::$container->get(Http\Controller::class, [
                     "id_controller",
-                    \Yii::$container->get(Module::class, ["id_module"])
+                    \Yii::$container->get(base\Module::class, ["id_module"])
                 ]),
                 [
                     "post" => [
-                        'class' => PostForm::class
+                        'class' => Http\Rest\PostForm::class
                     ]
                 ]
             ]
         );
     }
 
-    protected function appConfig(): array
+    protected static function appConfig(): array
     {
         return ArrayHelper::merge(parent::appConfig(), [
             'components' => [
                 'request' => [
-                    'class' => \Wearesho\Yii\Http\Request::class,
+                    'class' => Http\Request::class,
                 ],
             ]
         ]);
@@ -76,7 +78,7 @@ class ActionTest extends AbstractTestCase
                     'modelClass' => 'yii\base\ModelEvent'
                 ],
             ],
-            $this->action->rest(ModelEvent::class)
+            $this->action->rest(base\ModelEvent::class)
         );
     }
 
@@ -85,6 +87,7 @@ class ActionTest extends AbstractTestCase
      */
     public function testRunException(): void
     {
+        /** @noinspection PhpUnhandledExceptionInspection */
         $runResult = $this->action->run();
 
         $this->assertEquals(
@@ -96,6 +99,7 @@ class ActionTest extends AbstractTestCase
     public function testRunOptions(): void
     {
         $_SERVER['REQUEST_METHOD'] = "OPTIONS";
+        /** @noinspection PhpUnhandledExceptionInspection */
         $this->assertEquals(
             null,
             $this->action->run()
@@ -108,6 +112,7 @@ class ActionTest extends AbstractTestCase
     public function testRunPost(): void
     {
         $_SERVER['REQUEST_METHOD'] = "POST";
+        /** @noinspection PhpUnhandledExceptionInspection */
         $this->action->run();
     }
 }

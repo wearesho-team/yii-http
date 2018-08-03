@@ -19,6 +19,7 @@ use yii\web\User;
 /**
  * Class AccessControlTest
  * @package Wearesho\Yii\Http\Tests\Behaviors
+ *
  * @internal
  */
 class AccessControlTest extends AbstractTestCase
@@ -37,10 +38,11 @@ class AccessControlTest extends AbstractTestCase
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\di\NotInstantiableException
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
+        $this->manager = \Yii::$app->authManager;
         $this->user = new class(mt_rand(1, 100)) implements IdentityInterface
         {
 
@@ -117,29 +119,6 @@ class AccessControlTest extends AbstractTestCase
                 throw new \Exception("Method not implemented");
             }
         };
-    }
-
-    protected function appConfig(): array
-    {
-        $parentAppConfig = parent::appConfig();
-        \Yii::$container->set(
-            ManagerInterface::class,
-            [
-                'class' => PhpManager::class,
-                'itemFile' => '@output/items.php',
-                'assignmentFile' => '@output/assignment.php',
-                'ruleFile' => '@output/rule.php',
-            ]
-        );
-
-        $this->manager = \Yii::$container->get(ManagerInterface::class);
-        $config = [
-            'components' => [
-                'authManager' => $this->manager,
-            ],
-        ];
-
-        return array_merge($parentAppConfig, $config);
     }
 
     /**
