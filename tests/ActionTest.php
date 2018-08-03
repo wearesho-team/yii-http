@@ -3,21 +3,22 @@
 namespace Wearesho\Yii\Http\Tests;
 
 use Horat1us\Yii\Helpers\ArrayHelper;
+
 use PHPUnit\Framework\TestResult;
-use Wearesho\Yii\Http\Action;
-use Wearesho\Yii\Http\Controller;
-use Wearesho\Yii\Http\Rest\PostForm;
-use yii;
-use yii\base\ModelEvent;
-use yii\base\Module;
+
+use Wearesho\Yii\Http;
+
+use yii\base;
 
 /**
  * Class ActionTest
  * @package Wearesho\Yii\Http\Tests
+ *
+ * @internal
  */
 class ActionTest extends AbstractTestCase
 {
-    /** @var Action */
+    /** @var Http\Action */
     protected $action;
 
     public function setUp(): void
@@ -26,16 +27,16 @@ class ActionTest extends AbstractTestCase
 
         /** @noinspection PhpUnhandledExceptionInspection */
         $this->action = \Yii::$container->get(
-            Action::class,
+            Http\Action::class,
             [
                 "id_action",
-                \Yii::$container->get(Controller::class, [
+                \Yii::$container->get(Http\Controller::class, [
                     "id_controller",
-                    \Yii::$container->get(Module::class, ["id_module"])
+                    \Yii::$container->get(base\Module::class, ["id_module"])
                 ]),
                 [
                     "post" => [
-                        'class' => PostForm::class
+                        'class' => Http\Rest\PostForm::class
                     ]
                 ]
             ]
@@ -47,104 +48,66 @@ class ActionTest extends AbstractTestCase
         return ArrayHelper::merge(parent::appConfig(), [
             'components' => [
                 'request' => [
-                    'class' => \Wearesho\Yii\Http\Request::class,
+                    'class' => Http\Request::class,
                 ],
             ]
         ]);
     }
 
-    public function testRest(): void
+    public function testFull(): void
     {
-        $methods = [
-            'get' => [
-                'class' => 'Wearesho\Yii\Http\Rest\GetPanel',
-                'modelClass' => 'yii\base\ModelEvent',
-            ],
-            'post' => [
-                'class' => 'Wearesho\Yii\Http\Rest\PostForm',
-                'modelClass' => 'yii\base\ModelEvent',
-            ],
-            'put' => [
-                'class' => 'Wearesho\Yii\Http\Rest\PutForm',
-                'modelClass' => 'yii\base\ModelEvent',
-            ],
-            'patch' => [
-                'class' => 'Wearesho\Yii\Http\Rest\PatchForm',
-                'modelClass' => 'yii\base\ModelEvent',
-            ],
-            'delete' => [
-                'class' => 'Wearesho\Yii\Http\Rest\DeleteForm',
-                'modelClass' => 'yii\base\ModelEvent',
-            ],
-        ];
-
-        // random unit
-        for ($i = 0; $i < mt_rand(1, 10); $i++) {
-            $randMethodKeys = [];
-
-            foreach ($methods as $method => $parameters) {
-                !rand(0, 1) ?: $randMethodKeys[$method] = $method;
-            }
-
-            $expectedMethods = array_filter($methods, function ($method) use ($randMethodKeys) {
-                return in_array($method, $randMethodKeys);
-            }, ARRAY_FILTER_USE_KEY);
-
-            $this->assertEquals(
-                $expectedMethods,
-                $this->action->rest(ModelEvent::class, $randMethodKeys)
-            );
-        }
-
-        // simple unit
-        $this->assertEquals(
+        $rest = $this->action->rest(base\Model::class);
+        $this->assertArraySubset(
             [
                 'get' => [
-                    'class' => 'Wearesho\Yii\Http\Rest\GetPanel',
-                    'modelClass' => 'yii\base\ModelEvent',
+                    'class' => Http\Rest\GetPanel::class,
+                    'modelClass' => base\Model::class,
                 ],
                 'post' => [
-                    'class' => 'Wearesho\Yii\Http\Rest\PostForm',
-                    'modelClass' => 'yii\base\ModelEvent',
-                ],
-            ],
-            $this->action->rest(
-                ModelEvent::class,
-                [
-                    'get',
-                    'post',
-                ]
-            )
-        );
-        $this->assertEquals(
-            [
-                'get' => [
-                    'class' => 'Wearesho\Yii\Http\Rest\GetPanel',
-                    'modelClass' => 'yii\base\ModelEvent',
-                ],
-                'post' => [
-                    'class' => 'Wearesho\Yii\Http\Rest\PostForm',
-                    'modelClass' => 'yii\base\ModelEvent',
+                    'class' => Http\Rest\PostForm::class,
+                    'modelClass' => base\Model::class,
                 ],
                 'put' => [
-                    'class' => 'Wearesho\Yii\Http\Rest\PutForm',
-                    'modelClass' => 'yii\base\ModelEvent',
+                    'class' => Http\Rest\PutForm::class,
+                    'modelClass' => base\Model::class,
                 ],
                 'patch' => [
-                    'class' => 'Wearesho\Yii\Http\Rest\PatchForm',
-                    'modelClass' => 'yii\base\ModelEvent',
+                    'class' => Http\Rest\PatchForm::class,
+                    'modelClass' => base\Model::class,
                 ],
                 'delete' => [
-                    'class' => 'Wearesho\Yii\Http\Rest\DeleteForm',
-                    'modelClass' => 'yii\base\ModelEvent',
+                    'class' => Http\Rest\DeleteForm::class,
+                    'modelClass' => base\Model::class,
                 ],
             ],
-            $this->action->rest(ModelEvent::class)
+            $rest
+        );
+    }
+
+    public function testCertainMethods(): void
+    {
+        $rest = $this->action->rest(base\Model::class, ['post', 'patch', 'delete',]);
+        $this->assertArraySubset(
+            [
+                'post' => [
+                    'class' => Http\Rest\PostForm::class,
+                    'modelClass' => base\Model::class,
+                ],
+                'patch' => [
+                    'class' => Http\Rest\PatchForm::class,
+                    'modelClass' => base\Model::class,
+                ],
+                'delete' => [
+                    'class' => Http\Rest\DeleteForm::class,
+                    'modelClass' => base\Model::class,
+                ],
+            ],
+            $rest
         );
     }
 
     /**
-     * @expectedException yii\web\NotFoundHttpException
+     * @expectedException \yii\web\NotFoundHttpException
      */
     public function testRunException(): void
     {
@@ -168,7 +131,7 @@ class ActionTest extends AbstractTestCase
     }
 
     /**
-     * @expectedException yii\base\InvalidConfigException
+     * @expectedException \yii\base\InvalidConfigException
      * @expectedExceptionMessage Connection::dsn cannot be empty.
      */
     public function testRunPost(): void
