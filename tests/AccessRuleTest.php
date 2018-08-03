@@ -68,11 +68,7 @@ class AccessRuleTest extends AbstractTestCase
     public function testDeniedAccess(): void
     {
         $this->role = static::$authManager->createRole(static::ROLE_GUEST);
-        /** @noinspection PhpUnhandledExceptionInspection */
-        static::$authManager->add($this->role);
-        /** @noinspection PhpUnhandledExceptionInspection */
-        static::$authManager->assign($this->role, $this->userMock->getId());
-        \Yii::$app->user->setIdentity($this->userMock);
+        $this->setIdentityUser();
 
         $this->access = new Http\AccessRule([
             'allow' => false,
@@ -93,11 +89,7 @@ class AccessRuleTest extends AbstractTestCase
     public function testAcceptAccess(): void
     {
         $this->role = static::$authManager->createRole(static::ROLE_ADMIN);
-        /** @noinspection PhpUnhandledExceptionInspection */
-        static::$authManager->add($this->role);
-        /** @noinspection PhpUnhandledExceptionInspection */
-        static::$authManager->assign($this->role, $this->userMock->getId());
-        \Yii::$app->user->setIdentity($this->userMock);
+        $this->setIdentityUser();
 
         $this->access = new Http\AccessRule([
             'allow' => true,
@@ -119,11 +111,7 @@ class AccessRuleTest extends AbstractTestCase
     public function testNullAccess(): void
     {
         $this->role = static::$authManager->createRole(static::ROLE_ADMIN);
-        /** @noinspection PhpUnhandledExceptionInspection */
-        static::$authManager->add($this->role);
-        /** @noinspection PhpUnhandledExceptionInspection */
-        static::$authManager->assign($this->role, $this->userMock->getId());
-        \Yii::$app->user->setIdentity($this->userMock);
+        $this->setIdentityUser();
 
         $this->access = new Http\AccessRule([
             'allow' => true,
@@ -144,11 +132,7 @@ class AccessRuleTest extends AbstractTestCase
     public function testCallablePermissions(): void
     {
         $this->role = static::$authManager->createRole(static::ROLE_ADMIN);
-        /** @noinspection PhpUnhandledExceptionInspection */
-        static::$authManager->add($this->role);
-        /** @noinspection PhpUnhandledExceptionInspection */
-        static::$authManager->assign($this->role, $this->userMock->getId());
-        \Yii::$app->user->setIdentity($this->userMock);
+        $this->setIdentityUser();
 
         $this->access = new Http\AccessRule([
             'allow' => true,
@@ -167,6 +151,15 @@ class AccessRuleTest extends AbstractTestCase
                 $this->request
             )
         );
+    }
+
+    protected function setIdentityUser(): void
+    {
+        /** @noinspection PhpUnhandledExceptionInspection */
+        static::$authManager->add($this->role);
+        /** @noinspection PhpUnhandledExceptionInspection */
+        static::$authManager->assign($this->role, $this->userMock->getId());
+        \Yii::$app->user->setIdentity($this->userMock);
     }
 
     protected function tearDown(): void
