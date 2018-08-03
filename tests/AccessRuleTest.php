@@ -16,26 +16,52 @@ use yii\web;
 class AccessRuleTest extends AbstractTestCase
 {
     /** @var Http\AccessRule */
-    protected $access;
+    protected static $access;
 
     /** @var Http\Action */
-    protected $action;
+    protected static $action;
 
     /** @var web\User */
-    protected $user;
+    protected static $user;
 
     /** @var Http\Request */
-    protected $request;
+    protected static $request;
 
     public function testDeniedAccess(): void
     {
-        $this->access = new Http\AccessRule([
+        $this->assertFalse(
+            static::$access->allows(
+                static::$action,
+                static::$user,
+                static::$request
+            )
+        );
+    }
+
+    public function testAcceptAccess(): void
+    {
+        static::$access = new Http\AccessRule([
+            'permissions' => [],
+            'allow' => true
+        ]);
+
+        $this->assertTrue(
+            static::$access->allows(
+                static::$action,
+                static::$user,
+                static::$request
+            )
+        );
+    }
+
+    public static function setUpBeforeClass()
+    {
+        static::$access = new Http\AccessRule([
             'permissions' => function (): array {
                 return [];
             },
         ]);
-
-        $this->action = new Http\Action(
+        static::$action = new Http\Action(
             "id_action",
             new Mocks\Access\TestController(
                 "id_controller",
@@ -43,17 +69,9 @@ class AccessRuleTest extends AbstractTestCase
             ),
             []
         );
-        $this->user = new web\User([
+        static::$user = new web\User([
             'identityClass' => "AndrewClass",
         ]);
-        $this->request = new Http\Request([]);
-
-        $this->assertFalse(
-            $this->access->allows(
-                $this->action,
-                $this->user,
-                $this->request
-            )
-        );
+        static::$request = new Http\Request([]);
     }
 }
