@@ -5,17 +5,12 @@ namespace Wearesho\Yii\Http\Tests;
 use PHPUnit\Framework\TestCase;
 
 use yii\console\Application;
-
-use yii\db\Migration;
 use yii\db\Connection;
-
-use \DirectoryIterator;
 use yii\di\Container;
 
 /**
  * Class AbstractTestCase
  * @package Wearesho\Yii\Tests
- * @internal
  */
 abstract class AbstractTestCase extends TestCase
 {
