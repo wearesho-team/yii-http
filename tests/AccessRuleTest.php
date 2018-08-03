@@ -54,7 +54,7 @@ class AccessRuleTest extends AbstractTestCase
         );
     }
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->access = new Http\AccessRule([
             'permissions' => function (): array {
