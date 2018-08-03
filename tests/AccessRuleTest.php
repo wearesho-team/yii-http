@@ -16,52 +16,52 @@ use yii\web;
 class AccessRuleTest extends AbstractTestCase
 {
     /** @var Http\AccessRule */
-    protected static $access;
+    protected $access;
 
     /** @var Http\Action */
-    protected static $action;
+    protected $action;
 
     /** @var web\User */
-    protected static $user;
+    protected $user;
 
     /** @var Http\Request */
-    protected static $request;
+    protected $request;
 
     public function testDeniedAccess(): void
     {
         $this->assertFalse(
-            static::$access->allows(
-                static::$action,
-                static::$user,
-                static::$request
+            $this->access->allows(
+                $this->action,
+                $this->user,
+                $this->request
             )
         );
     }
 
     public function testAcceptAccess(): void
     {
-        static::$access = new Http\AccessRule([
+      $this->access = new Http\AccessRule([
             'permissions' => [],
-            'allow' => true
+           'allow' => true
         ]);
 
         $this->assertTrue(
-            static::$access->allows(
-                static::$action,
-                static::$user,
-                static::$request
+            $this->access->allows(
+                $this->action,
+                $this->user,
+                $this->request
             )
         );
     }
 
-    public static function setUpBeforeClass()
+    public function setUp(): void
     {
-        static::$access = new Http\AccessRule([
+        $this->access = new Http\AccessRule([
             'permissions' => function (): array {
                 return [];
             },
         ]);
-        static::$action = new Http\Action(
+        $this->action = new Http\Action(
             "id_action",
             new Mocks\Access\TestController(
                 "id_controller",
@@ -69,9 +69,9 @@ class AccessRuleTest extends AbstractTestCase
             ),
             []
         );
-        static::$user = new web\User([
+        $this->user = new web\User([
             'identityClass' => "AndrewClass",
         ]);
-        static::$request = new Http\Request([]);
+        $this->request = new Http\Request([]);
     }
 }
