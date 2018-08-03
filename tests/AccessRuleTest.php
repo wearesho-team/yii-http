@@ -38,12 +38,12 @@ class AccessRuleTest extends AbstractTestCase
 
     public function testDeniedAccess(): void
     {
-        $roleGuest = static::$authManager->createRole(static::ROLE_GUEST);
+        $this->role = static::$authManager->createRole(static::ROLE_GUEST);
         $user = new Http\Tests\Mocks\UserMock(mt_rand());
         /** @noinspection PhpUnhandledExceptionInspection */
-        static::$authManager->add($roleGuest);
+        static::$authManager->add($this->role);
         /** @noinspection PhpUnhandledExceptionInspection */
-        static::$authManager->assign($roleGuest, $user->getId());
+        static::$authManager->assign($this->role, $user->getId());
         \Yii::$app->user->setIdentity($user);
 
         $this->access = new Http\AccessRule([
@@ -64,12 +64,12 @@ class AccessRuleTest extends AbstractTestCase
 
     public function testAcceptAccess(): void
     {
-        $roleAdmin = static::$authManager->createRole(static::ROLE_ADMIN);
+        $this->role = static::$authManager->createRole(static::ROLE_ADMIN);
         $user = new Http\Tests\Mocks\UserMock(mt_rand());
         /** @noinspection PhpUnhandledExceptionInspection */
-        static::$authManager->add($roleAdmin);
+        static::$authManager->add($this->role);
         /** @noinspection PhpUnhandledExceptionInspection */
-        static::$authManager->assign($roleAdmin, $user->getId());
+        static::$authManager->assign($this->role, $user->getId());
         \Yii::$app->user->setIdentity($user);
 
         $this->access = new Http\AccessRule([
@@ -91,12 +91,12 @@ class AccessRuleTest extends AbstractTestCase
 
     public function testNullAccess(): void
     {
-        $roleAdmin = static::$authManager->createRole(static::ROLE_ADMIN);
+        $this->role = static::$authManager->createRole(static::ROLE_ADMIN);
         $user = new Http\Tests\Mocks\UserMock(mt_rand());
         /** @noinspection PhpUnhandledExceptionInspection */
-        static::$authManager->add($roleAdmin);
+        static::$authManager->add($this->role);
         /** @noinspection PhpUnhandledExceptionInspection */
-        static::$authManager->assign($roleAdmin, $user->getId());
+        static::$authManager->assign($this->role, $user->getId());
         \Yii::$app->user->setIdentity($user);
 
         $this->access = new Http\AccessRule([
