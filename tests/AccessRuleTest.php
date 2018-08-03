@@ -67,7 +67,7 @@ class AccessRuleTest extends AbstractTestCase
 
     public function testDeniedAccess(): void
     {
-        $this->role = static::$authManager->createRole(static::ROLE_GUEST);
+        $this->setRoleGuest();
         $this->setIdentityUser();
 
         $this->access = new Http\AccessRule([
@@ -88,7 +88,7 @@ class AccessRuleTest extends AbstractTestCase
 
     public function testAcceptAccess(): void
     {
-        $this->role = static::$authManager->createRole(static::ROLE_ADMIN);
+        $this->setRoleAdmin();
         $this->setIdentityUser();
 
         $this->access = new Http\AccessRule([
@@ -110,7 +110,7 @@ class AccessRuleTest extends AbstractTestCase
 
     public function testNullAccess(): void
     {
-        $this->role = static::$authManager->createRole(static::ROLE_ADMIN);
+        $this->setRoleAdmin();
         $this->setIdentityUser();
 
         $this->access = new Http\AccessRule([
@@ -131,7 +131,7 @@ class AccessRuleTest extends AbstractTestCase
 
     public function testCallablePermissions(): void
     {
-        $this->role = static::$authManager->createRole(static::ROLE_ADMIN);
+        $this->setRoleAdmin();
         $this->setIdentityUser();
 
         $this->access = new Http\AccessRule([
@@ -151,6 +151,21 @@ class AccessRuleTest extends AbstractTestCase
                 $this->request
             )
         );
+    }
+
+    protected function setRole(string $roleName): void
+    {
+        $this->role = static::$authManager->createRole($roleName);
+    }
+
+    protected function setRoleGuest(): void
+    {
+        $this->setRole(static::ROLE_GUEST);
+    }
+
+    protected function setRoleAdmin(): void
+    {
+        $this->setRole(static::ROLE_ADMIN);
     }
 
     protected function setIdentityUser(): void
