@@ -2,13 +2,13 @@
 
 namespace Wearesho\Yii\Http;
 
-use yii\filters\AccessRule as YiiAccessRule;
+use yii\filters;
 
 /**
  * Class AccessRule
  * @package Wearesho\Yii\Http
  */
-class AccessRule extends YiiAccessRule
+class AccessRule extends filters\AccessRule
 {
     /**
      * This implementation pass callable as value

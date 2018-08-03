@@ -2,16 +2,14 @@
 
 namespace Wearesho\Yii\Http\Rest;
 
-use Wearesho\Yii\Http\Panel;
-use yii\base\ArrayableTrait;
+use yii\base;
 
 /**
- * Class GetPanel
- * @package Wearesho\Yii\Http
+ * Trait ResponseConfigurable
+ * @package Wearesho\Yii\Http\Rest
  */
-class GetPanel extends Panel
+trait ResponseConfigurable
 {
-    use RestPanelTrait, ResponseConfigurable;
 
     /**
      * @var array
@@ -30,11 +28,8 @@ class GetPanel extends Panel
      */
     public $recursive = true;
 
-    /**
-     * @return array
-     */
-    protected function generateResponse(): array
+    protected function convert(base\Model $model): array
     {
-        return $this->convert($this->record);
+        return $model->toArray($this->fields, $this->expand, $this->recursive);
     }
 }

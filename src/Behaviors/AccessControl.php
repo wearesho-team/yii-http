@@ -2,27 +2,17 @@
 
 namespace Wearesho\Yii\Http\Behaviors;
 
-use Wearesho\Yii\Http\Panel;
-use Wearesho\Yii\Http\Request;
-
-use yii\base\Action;
-use yii\base\Behavior;
-use yii\base\Module;
-
-use yii\di\Instance;
-
-use yii\filters\AccessRule;
-
-use yii\web\ForbiddenHttpException;
-use yii\web\HttpException;
-use yii\web\UnauthorizedHttpException;
-use yii\web\User;
+use Wearesho\Yii\Http;
+use yii\base;
+use yii\di;
+use yii\web;
+use yii\filters;
 
 /**
  * Class AccessControl
  * @package Wearesho\Yii\Http\Behaviors
  */
-class AccessControl extends Behavior
+class AccessControl extends base\Behavior
 {
     public const ROLE_DEFAULT = '@';
     public const ROLE_GUEST = '?';
@@ -32,7 +22,7 @@ class AccessControl extends Behavior
      * specified via [[rules]] will take precedence when the same property of the rule is configured.
      */
     public $ruleConfig = [
-        'class' => AccessRule::class,
+        'class' => filters\AccessRule::class,
         'allow' => true,
     ];
 
@@ -44,18 +34,18 @@ class AccessControl extends Behavior
      */
     public $rules = [];
 
-    /** @var User|array */
+    /** @var web\User|array */
     public $user = [
-        'class' => \yii\web\User::class,
+        'class' => web\User::class,
     ];
 
     /** @var callable */
     public $denyCallback;
 
-    /** @var Request */
+    /** @var Http\Request */
     protected $request;
 
-    public function __construct(Request $request, array $config = [])
+    public function __construct(Http\Request $request, array $config = [])
     {
         parent::__construct($config);
         $this->request = $request;
@@ -65,17 +55,17 @@ class AccessControl extends Behavior
     public function events()
     {
         return [
-            Panel::EVENT_BEFORE_VALIDATE => 'checkAccess',
+            Http\Panel::EVENT_BEFORE_VALIDATE => 'checkAccess',
         ];
     }
 
     /**
-     * @throws \yii\base\InvalidConfigException
+     * @throws base\InvalidConfigException
      */
     public function init()
     {
         parent::init();
-        $this->user = Instance::ensure($this->user, \yii\web\User::class);
+        $this->user = di\Instance::ensure($this->user, web\User::class);
         foreach ($this->rules as $i => $rule) {
             if (is_array($rule)) {
                 $config = array_merge($this->ruleConfig, $rule);
@@ -85,20 +75,20 @@ class AccessControl extends Behavior
     }
 
     /**
-     * @throws HttpException
+     * @throws web\HttpException
      */
     public function checkAccess(): void
     {
         $user = $this->user;
-        $action = new Action(
+        $action = new base\Action(
             get_called_class(),
-            new \yii\base\Controller(
+            new base\Controller(
                 'fake-controller',
-                new Module('fake-module')
+                new base\Module('fake-module')
             )
         );
 
-        /* @var $rule AccessRule */
+        /* @var $rule filters\AccessRule */
         foreach ($this->rules as $rule) {
             if ($allow = $rule->allows($action, $user, $this->request)) {
                 return;
@@ -120,20 +110,20 @@ class AccessControl extends Behavior
     }
 
     /**
-     * @param User $user
+     * @param web\User $user
      *
-     * @throws UnauthorizedHttpException
-     * @throws ForbiddenHttpException
+     * @throws web\UnauthorizedHttpException
+     * @throws web\ForbiddenHttpException
      */
-    protected function deny(User $user): void
+    protected function deny(web\User $user): void
     {
         if ($user->getIsGuest()) {
             try {
                 $user->loginRequired();
-            } catch (ForbiddenHttpException $ex) {
-                throw new UnauthorizedHttpException($ex->getMessage(), $ex->getCode(), $ex);
+            } catch (web\ForbiddenHttpException $ex) {
+                throw new web\UnauthorizedHttpException($ex->getMessage(), $ex->getCode(), $ex);
             }
         }
-        throw new ForbiddenHttpException("Action is not allowed.");
+        throw new web\ForbiddenHttpException("Action is not allowed.");
     }
 }

@@ -12,7 +12,7 @@ use yii\db\ActiveRecord;
  */
 class PostForm extends Form
 {
-    use ScenarioTrait;
+    use ScenarioTrait, ResponseConfigurable;
 
     /** @var string ActiveRecord to be created */
     public $modelClass;
@@ -31,6 +31,6 @@ class PostForm extends Form
 
         HttpValidationException::saveOrThrow($record);
 
-        return $record->toArray();
+        return $this->convert($record);
     }
 }

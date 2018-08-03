@@ -2,8 +2,6 @@
 
 namespace Wearesho\Yii\Http;
 
-use yii\base\Controller as BaseController;
-
 use yii\db\Connection;
 
 /**

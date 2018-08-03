@@ -2,23 +2,16 @@
 
 namespace Wearesho\Yii\Http;
 
-use Wearesho\Yii\Http\Rest\DeleteForm;
-use Wearesho\Yii\Http\Rest\GetPanel;
-use Wearesho\Yii\Http\Rest\PatchForm;
-use Wearesho\Yii\Http\Rest\PostForm;
-use Wearesho\Yii\Http\Rest\PutForm;
-use yii\base\InvalidConfigException;
-use yii\base\Action as BaseAction;
-
-use yii\di\Instance;
-use yii\web\NotFoundHttpException;
-use yii\web\Response as WebResponse;
+use Wearesho\Yii\Http\Rest;
+use yii\base;
+use yii\di;
+use yii\web;
 
 /**
  * Class Action
  * @package api\components
  */
-class Action extends BaseAction
+class Action extends base\Action
 {
     /**
      * @var string[]
@@ -38,10 +31,10 @@ class Action extends BaseAction
     }
 
     /**
-     * @return WebResponse
+     * @return web\Response
      *
-     * @throws InvalidConfigException
-     * @throws NotFoundHttpException
+     * @throws base\InvalidConfigException
+     * @throws web\NotFoundHttpException
      *
      * @throws Exceptions\HttpValidationException
      */
@@ -54,11 +47,11 @@ class Action extends BaseAction
 
         $className = $this->panels[$method] ?? null;
         if (is_null($className)) {
-            throw new NotFoundHttpException();
+            throw new web\NotFoundHttpException();
         }
 
         /** @var Panel $panel */
-        $panel = Instance::ensure($className, Panel::class);
+        $panel = di\Instance::ensure($className, Panel::class);
 
         return $panel->getResponse();
     }
@@ -67,23 +60,23 @@ class Action extends BaseAction
     {
         $actions = [
             'get' => [
-                'class' => GetPanel::class,
+                'class' => Rest\GetPanel::class,
                 'modelClass' => $modelClass,
             ],
             'post' => [
-                'class' => PostForm::class,
+                'class' => Rest\PostForm::class,
                 'modelClass' => $modelClass,
             ],
             'put' => [
-                'class' => PutForm::class,
+                'class' => Rest\PutForm::class,
                 'modelClass' => $modelClass,
             ],
             'patch' => [
-                'class' => PatchForm::class,
+                'class' => Rest\PatchForm::class,
                 'modelClass' => $modelClass,
             ],
             'delete' => [
-                'class' => DeleteForm::class,
+                'class' => Rest\DeleteForm::class,
                 'modelClass' => $modelClass,
             ],
         ];
