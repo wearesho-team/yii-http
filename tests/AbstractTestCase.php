@@ -15,7 +15,6 @@ use yii\di\Container;
 /**
  * Class AbstractTestCase
  * @package Wearesho\Yii\Tests
- * @internal
  */
 abstract class AbstractTestCase extends TestCase
 {

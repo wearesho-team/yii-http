@@ -2,38 +2,51 @@
 
 namespace Wearesho\Yii\Http\Tests;
 
-use Wearesho\Yii\Http\AccessRule;
-use Wearesho\Yii\Http\Action;
-use Wearesho\Yii\Http\Controller;
-use Wearesho\Yii\Http\Request;
-use yii\base\Module;
-use yii\web\User;
+use Wearesho\Yii\Http;
+
+use yii\base;
+use yii\web;
 
 class AccessRuleTest extends AbstractTestCase
 {
-    public function testAllows()
+    /** @var Http\AccessRule */
+    protected $access;
+
+    /** @var Http\Action */
+    protected $action;
+
+    /** @var web\User */
+    protected $user;
+
+    /** @var Http\Request */
+    protected $request;
+
+    public function testDeniedAccess(): void
     {
-        $accessRule1 = new AccessRule();
-        $accessRule1->permissions = function () {
-            return [];
-        };
+        $this->access = new Http\AccessRule([
+            'permissions' => function (): array {
+                return [];
+            },
+        ]);
+
+        $this->action = new Http\Action(
+            "id_action",
+            new Mocks\Access\TestController(
+                "id_controller",
+                new base\Module("id_module")
+            ),
+            []
+        );
+        $this->user = new web\User([
+            'identityClass' => "AndrewClass",
+        ]);
+        $this->request = new Http\Request([]);
 
         $this->assertFalse(
-            $accessRule1->allows(
-                new Action(
-                    "oneAction",
-                    new Controller(
-                        "oneController",
-                        new Module("oneModule")
-                    ),
-                    []
-                ),
-                new User(
-                    [
-                        'identityClass' => "AndrewClass",
-                    ]
-                ),
-                new Request([])
+            $this->access->allows(
+                $this->action,
+                $this->user,
+                $this->request
             )
         );
     }
