@@ -89,6 +89,32 @@ class AccessRuleTest extends AbstractTestCase
         );
     }
 
+    public function testNullAccess(): void
+    {
+        $roleAdmin = static::$authManager->createRole(static::ROLE_ADMIN);
+        $user = new Http\Tests\Mocks\UserMock(mt_rand());
+        /** @noinspection PhpUnhandledExceptionInspection */
+        static::$authManager->add($roleAdmin);
+        /** @noinspection PhpUnhandledExceptionInspection */
+        static::$authManager->assign($roleAdmin, $user->getId());
+        \Yii::$app->user->setIdentity($user);
+
+        $this->access = new Http\AccessRule([
+            'allow' => true,
+            'permissions' => [
+                static::ROLE_GUEST
+            ]
+        ]);
+
+        $this->assertNull(
+            $this->access->allows(
+                $this->action,
+                $this->user,
+                $this->request
+            )
+        );
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
