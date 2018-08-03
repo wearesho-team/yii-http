@@ -63,7 +63,7 @@ class AccessRuleTest extends AbstractTestCase
         ]);
         $this->action = new Http\Action(
             "id_action",
-            new Mocks\Access\TestController(
+            new Http\Controller(
                 "id_controller",
                 new base\Module("id_module")
             ),
