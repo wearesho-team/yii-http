@@ -40,9 +40,9 @@ class AccessRuleTest extends AbstractTestCase
 
     public function testAcceptAccess(): void
     {
-      $this->access = new Http\AccessRule([
+        $this->access = new Http\AccessRule([
             'permissions' => [],
-           'allow' => true
+            'allow' => true
         ]);
 
         $this->assertTrue(
