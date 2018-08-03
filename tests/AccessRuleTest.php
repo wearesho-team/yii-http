@@ -4,6 +4,7 @@ namespace Wearesho\Yii\Http\Tests;
 
 use Wearesho\Yii\Http;
 
+use yii\web;
 use yii\base;
 use yii\rbac;
 
@@ -30,21 +31,48 @@ class AccessRuleTest extends AbstractTestCase
     /** @var Http\Action */
     protected $action;
 
-    /** @var Http\Tests\Mocks\UserMock */
+    /** @var web\User */
     protected $user;
+
+    /** @var Http\Tests\Mocks\UserMock */
+    protected $userMock;
 
     /** @var Http\Request */
     protected $request;
 
+    public static function setUpBeforeClass(): void
+    {
+        parent::setUpBeforeClass();
+
+        static::$authManager = \Yii::$app->authManager;
+        static::$authManager->removeAll();
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->action = new Http\Action(
+            'id_action',
+            new Http\Controller(
+                'id_controller',
+                new base\Module('id_module')
+            ),
+            []
+        );
+        $this->user = \Yii::$app->user;
+        $this->userMock = new Http\Tests\Mocks\UserMock(mt_rand());
+        $this->request = new Http\Request([]);
+    }
+
     public function testDeniedAccess(): void
     {
         $this->role = static::$authManager->createRole(static::ROLE_GUEST);
-        $user = new Mocks\UserMock(mt_rand());
         /** @noinspection PhpUnhandledExceptionInspection */
         static::$authManager->add($this->role);
         /** @noinspection PhpUnhandledExceptionInspection */
-        static::$authManager->assign($this->role, $user->getId());
-        \Yii::$app->user->setIdentity($user);
+        static::$authManager->assign($this->role, $this->userMock->getId());
+        \Yii::$app->user->setIdentity($this->userMock);
 
         $this->access = new Http\AccessRule([
             'allow' => false,
@@ -65,12 +93,11 @@ class AccessRuleTest extends AbstractTestCase
     public function testAcceptAccess(): void
     {
         $this->role = static::$authManager->createRole(static::ROLE_ADMIN);
-        $user = new Mocks\UserMock(mt_rand());
         /** @noinspection PhpUnhandledExceptionInspection */
         static::$authManager->add($this->role);
         /** @noinspection PhpUnhandledExceptionInspection */
-        static::$authManager->assign($this->role, $user->getId());
-        \Yii::$app->user->setIdentity($user);
+        static::$authManager->assign($this->role, $this->userMock->getId());
+        \Yii::$app->user->setIdentity($this->userMock);
 
         $this->access = new Http\AccessRule([
             'allow' => true,
@@ -92,12 +119,11 @@ class AccessRuleTest extends AbstractTestCase
     public function testNullAccess(): void
     {
         $this->role = static::$authManager->createRole(static::ROLE_ADMIN);
-        $user = new Mocks\UserMock(mt_rand());
         /** @noinspection PhpUnhandledExceptionInspection */
         static::$authManager->add($this->role);
         /** @noinspection PhpUnhandledExceptionInspection */
-        static::$authManager->assign($this->role, $user->getId());
-        \Yii::$app->user->setIdentity($user);
+        static::$authManager->assign($this->role, $this->userMock->getId());
+        \Yii::$app->user->setIdentity($this->userMock);
 
         $this->access = new Http\AccessRule([
             'allow' => true,
@@ -118,12 +144,11 @@ class AccessRuleTest extends AbstractTestCase
     public function testCallablePermissions(): void
     {
         $this->role = static::$authManager->createRole(static::ROLE_ADMIN);
-        $user = new Mocks\UserMock(mt_rand());
         /** @noinspection PhpUnhandledExceptionInspection */
         static::$authManager->add($this->role);
         /** @noinspection PhpUnhandledExceptionInspection */
-        static::$authManager->assign($this->role, $user->getId());
-        \Yii::$app->user->setIdentity($user);
+        static::$authManager->assign($this->role, $this->userMock->getId());
+        \Yii::$app->user->setIdentity($this->userMock);
 
         $this->access = new Http\AccessRule([
             'allow' => true,
@@ -142,30 +167,6 @@ class AccessRuleTest extends AbstractTestCase
                 $this->request
             )
         );
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->action = new Http\Action(
-            'id_action',
-            new Http\Controller(
-                'id_controller',
-                new base\Module('id_module')
-            ),
-            []
-        );
-        $this->user = \Yii::$app->user;
-        $this->request = new Http\Request([]);
-    }
-
-    public static function setUpBeforeClass(): void
-    {
-        parent::setUpBeforeClass();
-
-        static::$authManager = \Yii::$app->authManager;
-        static::$authManager->removeAll();
     }
 
     protected function tearDown(): void
