@@ -2,19 +2,13 @@
 
 namespace Wearesho\Yii\Http\Tests\Behaviors;
 
-use Wearesho\Yii\Http\Behaviors\AccessControl;
-use Wearesho\Yii\Http\Exceptions\HttpValidationException;
-use Wearesho\Yii\Http\Panel;
+use Wearesho\Yii\Http;
+
 use Wearesho\Yii\Http\Request;
 use Wearesho\Yii\Http\Response;
-use Wearesho\Yii\Http\Tests\AbstractTestCase;
-use yii\rbac\ManagerInterface;
-use yii\rbac\Permission;
-use yii\rbac\PhpManager;
-use yii\rbac\Role;
-use yii\web\ForbiddenHttpException;
-use yii\web\IdentityInterface;
-use yii\web\User;
+use yii\base;
+use yii\rbac;
+use yii\web;
 
 /**
  * Class AccessControlTest
@@ -22,67 +16,50 @@ use yii\web\User;
  *
  * @internal
  */
-class AccessControlTest extends AbstractTestCase
+class AccessControlTest extends Http\Tests\AbstractTestCase
 {
+    public const ROLE_ADMIN = 'admin';
+    public const ROLE_GUEST = 'guest';
 
-    /** @var Panel */
+    /** @var Http\Panel */
     protected $panelInstance;
 
-    /** @var IdentityInterface */
+    /** @var web\IdentityInterface */
     protected $user;
 
-    /** @var ManagerInterface */
-    protected $manager;
+    /** @var rbac\Role */
+    protected $role;
 
-    /**
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\di\NotInstantiableException
-     */
+    /** @var rbac\ManagerInterface */
+    protected static $authManager;
+
+    public static function setUpBeforeClass(): void
+    {
+        parent::setUpBeforeClass();
+
+        static::$authManager = \Yii::$app->authManager;
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->manager = \Yii::$app->authManager;
-        $this->user = new class(mt_rand(1, 100)) implements IdentityInterface
+        $this->user = new Http\Tests\Mocks\UserMock(mt_rand());
+        $this->role = static::$authManager->createRole(static::ROLE_ADMIN);
+        /** @noinspection PhpUnhandledExceptionInspection */
+        static::$authManager->add($this->role);
+        /** @noinspection PhpUnhandledExceptionInspection */
+        static::$authManager->assign($this->role, $this->user->getId());
+        \Yii::$app->user->setIdentity($this->user);
+
+        $this->panelInstance = new class($this->user) extends Http\Panel
         {
-
-            private $id;
-
-            public function __construct(int $id)
-            {
-                $this->id = $id;
-            }
-
-            public static function findIdentity($id)
-            {
-            }
-
-            public static function findIdentityByAccessToken($token, $type = null)
-            {
-            }
-
-            public function getId()
-            {
-                return $this->id;
-            }
-
-            public function getAuthKey()
-            {
-            }
-
-            public function validateAuthKey($authKey)
-            {
-            }
-        };
-
-        $this->panelInstance = new class($this->user) extends Panel
-        {
-            /** @var IdentityInterface */
+            /** @var web\IdentityInterface */
             public $user;
 
-            public function __construct(IdentityInterface &$user)
+            public function __construct(web\IdentityInterface &$user)
             {
-                parent::__construct(new Request(), new Response(), []);
+                parent::__construct(new Http\Request(), new Http\Response(), []);
                 $this->user = &$user;
             }
 
@@ -95,14 +72,14 @@ class AccessControlTest extends AbstractTestCase
             {
                 return [
                     'access' => [
-                        'class' => AccessControl::class,
+                        'class' => Http\Behaviors\AccessControl::class,
                         'rules' => [
                             [
-                                'roles' => ['test'],
+                                'roles' => [AccessControlTest::ROLE_ADMIN, ],
                             ]
                         ],
                         'user' => [
-                            'class' => User::class,
+                            'class' => web\User::class,
                             'identityClass' => get_class($this->user),
                             'identity' => $this->user,
                         ]
@@ -122,42 +99,68 @@ class AccessControlTest extends AbstractTestCase
     }
 
     /**
-     * @throws \Exception
+     * @expectedException \Exception
+     * @expectedExceptionMessage Method not implemented
      */
-    public function testCorrect()
+    public function testCorrectAccess(): void
     {
-        $role = $this->getRole('test');
-
-        $this->manager->getAssignment('test', $this->user->getId())
-        || $this->manager->assign($role, $this->user->getId());
-
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage("Method not implemented");
-
+        /** @noinspection PhpUnhandledExceptionInspection */
         $this->panelInstance->getResponse();
     }
 
-    public function testForbidden()
+    public function testInvalidAccess(): void
     {
-        $role = $this->manager->getRole('test');
-        if ($role instanceof Role) {
-            $this->manager->revoke($role, $this->user->getId());
-        }
+        $this->panelInstance = new class(new Request(), new Response()) extends Http\Panel
+        {
+            public function __construct(
+                Request $request,
+                Response $response,
+                array $config = []
+            ) {
+                parent::__construct($request, $response, $config);
+            }
 
-        $this->expectException(ForbiddenHttpException::class);
+            public function formName(): string
+            {
+                return 'AnonymousForm';
+            }
 
+            public function behaviors(): array
+            {
+                return [
+                    'access' => [
+                        'class' => Http\Behaviors\AccessControl::class,
+                        'user' => \Yii::$app->user,
+                    ],
+                ];
+            }
+
+            protected function generateResponse(): array
+            {
+                return [];
+            }
+        };
+
+        \Yii::$app->user->setIdentity(null);
+
+        /** @noinspection PhpUnhandledExceptionInspection */
         $this->panelInstance->getResponse();
     }
 
-    protected function getRole(string $roleName)
+    /**
+     * @expectedException \yii\web\ForbiddenHttpException
+     * @expectedExceptionMessage Action is not allowed.
+     */
+    public function testForbidden(): void
     {
-        $role = $this->manager->getRole($roleName);
+        static::$authManager->revoke($this->role, $this->user->getId());
 
-        if (!$role) {
-            $role = $this->manager->createRole($roleName);
-            $this->manager->add($role);
-        }
+        /** @noinspection PhpUnhandledExceptionInspection */
+        $this->panelInstance->getResponse();
+    }
 
-        return $role;
+    protected function tearDown(): void
+    {
+        static::$authManager->removeAll();
     }
 }

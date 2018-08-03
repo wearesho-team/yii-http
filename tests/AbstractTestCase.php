@@ -4,8 +4,6 @@ namespace Wearesho\Yii\Http\Tests;
 
 use PHPUnit\Framework\TestCase;
 
-use Wearesho\Yii\Http\Tests\Mocks\UserMock;
-
 use yii\console\Application;
 use yii\db\Connection;
 use yii\di\Container;
@@ -68,7 +66,7 @@ abstract class AbstractTestCase extends TestCase
                 ],
                 'user' => [
                     'class' => User::class,
-                    'identityClass' => UserMock::class,
+                    'identityClass' => Mocks\UserMock::class,
                     'enableSession' => false,
                 ]
             ],
