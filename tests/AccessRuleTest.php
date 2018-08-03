@@ -39,7 +39,7 @@ class AccessRuleTest extends AbstractTestCase
     public function testDeniedAccess(): void
     {
         $this->role = static::$authManager->createRole(static::ROLE_GUEST);
-        $user = new Http\Tests\Mocks\UserMock(mt_rand());
+        $user = new Mocks\UserMock(mt_rand());
         /** @noinspection PhpUnhandledExceptionInspection */
         static::$authManager->add($this->role);
         /** @noinspection PhpUnhandledExceptionInspection */
@@ -65,7 +65,7 @@ class AccessRuleTest extends AbstractTestCase
     public function testAcceptAccess(): void
     {
         $this->role = static::$authManager->createRole(static::ROLE_ADMIN);
-        $user = new Http\Tests\Mocks\UserMock(mt_rand());
+        $user = new Mocks\UserMock(mt_rand());
         /** @noinspection PhpUnhandledExceptionInspection */
         static::$authManager->add($this->role);
         /** @noinspection PhpUnhandledExceptionInspection */
@@ -92,7 +92,7 @@ class AccessRuleTest extends AbstractTestCase
     public function testNullAccess(): void
     {
         $this->role = static::$authManager->createRole(static::ROLE_ADMIN);
-        $user = new Http\Tests\Mocks\UserMock(mt_rand());
+        $user = new Mocks\UserMock(mt_rand());
         /** @noinspection PhpUnhandledExceptionInspection */
         static::$authManager->add($this->role);
         /** @noinspection PhpUnhandledExceptionInspection */
@@ -118,7 +118,7 @@ class AccessRuleTest extends AbstractTestCase
     public function testCallablePermissions(): void
     {
         $this->role = static::$authManager->createRole(static::ROLE_ADMIN);
-        $user = new Http\Tests\Mocks\UserMock(mt_rand());
+        $user = new Mocks\UserMock(mt_rand());
         /** @noinspection PhpUnhandledExceptionInspection */
         static::$authManager->add($this->role);
         /** @noinspection PhpUnhandledExceptionInspection */
