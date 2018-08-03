@@ -5,12 +5,9 @@ namespace Wearesho\Yii\Http\Tests;
 use PHPUnit\Framework\TestCase;
 
 use Wearesho\Yii\Http\Tests\Mocks\UserMock;
+
 use yii\console\Application;
-
-use yii\db\Migration;
 use yii\db\Connection;
-
-use \DirectoryIterator;
 use yii\di\Container;
 use yii\rbac\PhpManager;
 use yii\web\User;
