@@ -43,7 +43,7 @@ class ActionTest extends AbstractTestCase
         );
     }
 
-    protected function appConfig(): array
+    protected static function appConfig(): array
     {
         return ArrayHelper::merge(parent::appConfig(), [
             'components' => [
@@ -123,9 +123,9 @@ class ActionTest extends AbstractTestCase
     public function testRunOptions(): void
     {
         $_SERVER['REQUEST_METHOD'] = "OPTIONS";
-
         /** @noinspection PhpUnhandledExceptionInspection */
-        $this->assertNull(
+        $this->assertEquals(
+            null,
             $this->action->run()
         );
     }
