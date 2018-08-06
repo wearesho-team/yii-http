@@ -11,7 +11,7 @@ use Wearesho\Yii\Http\Form;
  */
 class PatchForm extends Form
 {
-    use RestPanelTrait, ScenarioTrait;
+    use RestPanelTrait, ScenarioTrait, ResponseConfigurable;
 
     /**
      * @throws HttpValidationException
@@ -24,6 +24,6 @@ class PatchForm extends Form
 
         HttpValidationException::saveOrThrow($this->record);
 
-        return $this->record->toArray();
+        return $this->convert($this->record);
     }
 }

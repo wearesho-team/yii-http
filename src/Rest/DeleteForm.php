@@ -5,6 +5,10 @@ namespace Wearesho\Yii\Http\Rest;
 use Wearesho\Yii\Http\Form;
 use yii\web\UnprocessableEntityHttpException;
 
+/**
+ * Class DeleteForm
+ * @package Wearesho\Yii\Http\Rest
+ */
 class DeleteForm extends Form
 {
     use RestPanelTrait;
