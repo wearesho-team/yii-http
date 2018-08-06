@@ -56,9 +56,9 @@ class Action extends base\Action
         return $panel->getResponse();
     }
 
-    public static function rest(string $modelClass): array
+    public static function rest(string $modelClass, array $methods = ['get', 'post', 'put', 'patch', 'delete',]): array
     {
-        return [
+        $actions = [
             'get' => [
                 'class' => Rest\GetPanel::class,
                 'modelClass' => $modelClass,
@@ -80,5 +80,9 @@ class Action extends base\Action
                 'modelClass' => $modelClass,
             ],
         ];
+
+        return array_filter($actions, function ($method) use ($methods) {
+            return in_array($method, $methods);
+        }, ARRAY_FILTER_USE_KEY);
     }
 }
