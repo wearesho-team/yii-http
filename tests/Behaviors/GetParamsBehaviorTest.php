@@ -2,57 +2,47 @@
 
 namespace Wearesho\Yii\Http\Tests\Behaviors;
 
-use Wearesho\Yii\Http\Behaviors\GetParamsBehavior;
-use Wearesho\Yii\Http\Panel;
-use Wearesho\Yii\Http\Request;
-use Wearesho\Yii\Http\Response;
-use Wearesho\Yii\Http\Tests\AbstractTestCase;
+use Wearesho\Yii\Http;
+
+use yii\base\Model;
 
 /**
  * Class GetParamsBehaviorTest
  * @package Wearesho\Yii\Http\Tests\Behaviors
  * @internal
  */
-class GetParamsBehaviorTest extends AbstractTestCase
+class GetParamsBehaviorTest extends Http\Tests\AbstractTestCase
 {
-    public function testLoading()
+    /** @var int */
+    protected $fakeId;
+
+    /** @var string */
+    protected $fakeName;
+
+    /** @var Http\Tests\Mocks\PanelMock */
+    protected $panel;
+
+    protected function setUp(): void
     {
-        $panelMockIntance = new class(new Request(), new Response()) extends Panel
-        {
-            public $param;
+        parent::setUp();
 
-            public function behaviors()
-            {
-                return [
-                    'get' => [
-                        'class' => GetParamsBehavior::class,
-                        'attributes' => ['param',],
-                    ],
-                ];
-            }
+        $this->fakeId = mt_rand();
+        $this->fakeName = 'fakeName';
+    }
 
-            public function rules()
-            {
-                return [
-                    ['param', 'safe'],
-                ];
-            }
+    public function testCorrectData(): void
+    {
+        $this->panel = new Http\Tests\Mocks\PanelMock(
+            new Http\Request(),
+            new Http\Response()
+        );
 
+        $_GET['id'] = $this->fakeId;
+        $_GET['name'] = $this->fakeName;
 
-            /**
-             * @return array
-             * @throws \Exception
-             */
-            protected function generateResponse(): array
-            {
-                throw new \Exception("Method not implemented");
-            }
-        };
+        $this->panel->trigger(Http\Panel::EVENT_BEFORE_VALIDATE);
 
-        $paramValue = mt_rand();
-        $_GET['param'] = $paramValue;
-
-        $panelMockIntance->trigger(Panel::EVENT_BEFORE_VALIDATE);
-        $this->assertEquals($paramValue, $panelMockIntance->param);
+        $this->assertEquals($this->fakeId, $this->panel->id);
+        $this->assertEquals($this->fakeName, $this->panel->name);
     }
 }

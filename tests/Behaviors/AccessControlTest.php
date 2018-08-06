@@ -108,45 +108,6 @@ class AccessControlTest extends Http\Tests\AbstractTestCase
         $this->panelInstance->getResponse();
     }
 
-    public function testInvalidAccess(): void
-    {
-        $this->panelInstance = new class(new Request(), new Response()) extends Http\Panel
-        {
-            public function __construct(
-                Request $request,
-                Response $response,
-                array $config = []
-            ) {
-                parent::__construct($request, $response, $config);
-            }
-
-            public function formName(): string
-            {
-                return 'AnonymousForm';
-            }
-
-            public function behaviors(): array
-            {
-                return [
-                    'access' => [
-                        'class' => Http\Behaviors\AccessControl::class,
-                        'user' => \Yii::$app->user,
-                    ],
-                ];
-            }
-
-            protected function generateResponse(): array
-            {
-                return [];
-            }
-        };
-
-        \Yii::$app->user->setIdentity(null);
-
-        /** @noinspection PhpUnhandledExceptionInspection */
-        $this->panelInstance->getResponse();
-    }
-
     /**
      * @expectedException \yii\web\ForbiddenHttpException
      * @expectedExceptionMessage Action is not allowed.
