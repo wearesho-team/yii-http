@@ -4,9 +4,6 @@ namespace Wearesho\Yii\Http\Tests\Behaviors;
 
 use Wearesho\Yii\Http;
 
-use Wearesho\Yii\Http\Request;
-use Wearesho\Yii\Http\Response;
-use yii\base;
 use yii\rbac;
 use yii\web;
 

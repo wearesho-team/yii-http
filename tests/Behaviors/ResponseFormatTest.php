@@ -2,30 +2,26 @@
 
 namespace Wearesho\Yii\Http\Tests\Behaviors;
 
-use Wearesho\Yii\Http\Behaviors\ResponseFormat;
-use Wearesho\Yii\Http\Controller;
-use Wearesho\Yii\Http\Panel;
-use Wearesho\Yii\Http\Response;
-use Wearesho\Yii\Http\Rest\GetPanel;
-use Wearesho\Yii\Http\Tests\AbstractTestCase;
-use yii\base\Model;
-use yii\base\Module;
+use Wearesho\Yii\Http;
+
+use yii\base;
+
 
 /**
  * Class ResponseFormatTest
  * @package Wearesho\Yii\Http\Tests\Behaviors
  */
-class ResponseFormatTest extends AbstractTestCase
+class ResponseFormatTest extends Http\Tests\AbstractTestCase
 {
     public function testSet(): void
     {
-        $response = new Response();
-        $behavior = new ResponseFormat($response, [
-            'format' => Response::FORMAT_RAW,
+        $response = new Http\Response();
+        $behavior = new Http\Behaviors\ResponseFormat($response, [
+            'format' => Http\Response::FORMAT_RAW,
         ]);
         $behavior->setFormat();
 
-        $this->assertEquals(Response::FORMAT_RAW, $response->format);
+        $this->assertEquals(Http\Response::FORMAT_RAW, $response->format);
     }
 
     /**
@@ -34,15 +30,15 @@ class ResponseFormatTest extends AbstractTestCase
      */
     public function testInvalidFormat(): void
     {
-        $behavior = new ResponseFormat(new Response());
+        $behavior = new Http\Behaviors\ResponseFormat(new Http\Response());
         $behavior->setFormat();
     }
 
     public function testTrigger(): void
     {
-        $fakeController = new class('id_controller', new Module('id_module')) extends Controller
+        $fakeController = new class('id_controller', new base\Module('id_module')) extends Http\Controller
         {
-            public function __construct(string $id, Module $module, array $config = [])
+            public function __construct(string $id, base\Module $module, array $config = [])
             {
                 parent::__construct($id, $module, $config);
             }
@@ -51,8 +47,8 @@ class ResponseFormatTest extends AbstractTestCase
             {
                 return [
                     'get' => [
-                        'class' => ResponseFormat::class,
-                        'format' => Response::FORMAT_JSON,
+                        'class' => Http\Behaviors\ResponseFormat::class,
+                        'format' => Http\Response::FORMAT_JSON,
                     ],
                 ];
             }
@@ -67,7 +63,7 @@ class ResponseFormatTest extends AbstractTestCase
 
         $fakeController->enableCsrfValidation = false;
         $action = $fakeController->createAction('test');
-        $fakeController->trigger(Controller::EVENT_BEFORE_ACTION);
+        $fakeController->trigger(Http\Controller::EVENT_BEFORE_ACTION);
 
         $this->assertArraySubset(
             ['key' => 'value',],
