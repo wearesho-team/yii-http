@@ -4,7 +4,7 @@ namespace Wearesho\Yii\Http\Tests\Behaviors;
 
 use Wearesho\Yii\Http;
 
-use yii\base\Model;
+use yii\base;
 
 /**
  * Class GetParamsBehaviorTest
@@ -20,7 +20,7 @@ class GetParamsBehaviorTest extends Http\Tests\AbstractTestCase
     protected $fakeName;
 
     /** @var Http\Tests\Mocks\PanelMock */
-    protected $panel;
+    protected $fakePanel;
 
     protected function setUp(): void
     {
@@ -32,7 +32,7 @@ class GetParamsBehaviorTest extends Http\Tests\AbstractTestCase
 
     public function testCorrectData(): void
     {
-        $this->panel = new Http\Tests\Mocks\PanelMock(
+        $this->fakePanel = new Http\Tests\Mocks\PanelMock(
             new Http\Request(),
             new Http\Response()
         );
@@ -40,9 +40,67 @@ class GetParamsBehaviorTest extends Http\Tests\AbstractTestCase
         $_GET['id'] = $this->fakeId;
         $_GET['name'] = $this->fakeName;
 
-        $this->panel->trigger(Http\Panel::EVENT_BEFORE_VALIDATE);
+        $this->fakePanel->trigger(Http\Panel::EVENT_BEFORE_VALIDATE);
 
-        $this->assertEquals($this->fakeId, $this->panel->id);
-        $this->assertEquals($this->fakeName, $this->panel->name);
+        $this->assertEquals($this->fakeId, $this->fakePanel->id);
+        $this->assertEquals($this->fakeName, $this->fakePanel->name);
+    }
+
+    /**
+     * @expectedException \yii\base\InvalidConfigException
+     */
+    public function testNotPanel(): void
+    {
+        $this->fakePanel = new class extends base\Model
+        {
+            /** @var int */
+            public $id;
+
+            /** @var string */
+            public $name;
+
+            public function behaviors(): array
+            {
+                return [
+                    'get' => [
+                        'class' => Http\Behaviors\GetParamsBehavior::class,
+                        'attributes' => [
+                            'id',
+                            'name'
+                        ],
+                    ],
+                ];
+            }
+
+            public function rules(): array
+            {
+                return [
+                    [
+                        ['id', ],
+                        'integer',
+                    ],
+                    [
+                        ['name', ],
+                        'string',
+                    ],
+                    [
+                        ['id', 'name', ],
+                        'required',
+                    ]
+                ];
+            }
+
+            protected function generateResponse(): array
+            {
+                return [
+                    'paneMock' => 'testResult',
+                ];
+            }
+        };
+
+        $_GET['id'] = $this->fakeId;
+        $_GET['name'] = $this->fakeName;
+
+        $this->fakePanel->trigger(Http\Panel::EVENT_BEFORE_VALIDATE);
     }
 }
