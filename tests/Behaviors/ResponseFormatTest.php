@@ -3,8 +3,13 @@
 namespace Wearesho\Yii\Http\Tests\Behaviors;
 
 use Wearesho\Yii\Http\Behaviors\ResponseFormat;
+use Wearesho\Yii\Http\Controller;
+use Wearesho\Yii\Http\Panel;
 use Wearesho\Yii\Http\Response;
+use Wearesho\Yii\Http\Rest\GetPanel;
 use Wearesho\Yii\Http\Tests\AbstractTestCase;
+use yii\base\Model;
+use yii\base\Module;
 
 /**
  * Class ResponseFormatTest
@@ -31,5 +36,42 @@ class ResponseFormatTest extends AbstractTestCase
     {
         $behavior = new ResponseFormat(new Response());
         $behavior->setFormat();
+    }
+
+    public function testTrigger(): void
+    {
+        $fakeController = new class('id_controller', new Module('id_module')) extends Controller
+        {
+            public function __construct(string $id, Module $module, array $config = [])
+            {
+                parent::__construct($id, $module, $config);
+            }
+
+            public function behaviors(): array
+            {
+                return [
+                    'get' => [
+                        'class' => ResponseFormat::class,
+                        'format' => Response::FORMAT_JSON,
+                    ],
+                ];
+            }
+
+            public function actionTest(): array
+            {
+                return [
+                    'key' => 'value'
+                ];
+            }
+        };
+
+        $fakeController->enableCsrfValidation = false;
+        $action = $fakeController->createAction('test');
+        $fakeController->trigger(Controller::EVENT_BEFORE_ACTION);
+
+        $this->assertArraySubset(
+            ['key' => 'value',],
+            $action->runWithParams([])
+        );
     }
 }
