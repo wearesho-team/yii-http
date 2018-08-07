@@ -6,7 +6,6 @@ use Wearesho\Yii\Http;
 
 use yii\base;
 
-
 /**
  * Class ResponseFormatTest
  * @package Wearesho\Yii\Http\Tests\Behaviors
