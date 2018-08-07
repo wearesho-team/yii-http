@@ -30,6 +30,50 @@ class GetParamsBehaviorTest extends Http\Tests\AbstractTestCase
         $this->fakeName = 'fakeName';
     }
 
+    public function testExample(): void
+    {
+        $examplePanel = new class(
+            new Http\Request(),
+            new Http\Response()
+        ) extends Http\Panel
+        {
+            /** @var int */
+            public $param;
+
+            public function behaviors(): array
+            {
+                return [
+                    'get' => [
+                        'class' => Http\Behaviors\GetParamsBehavior::class,
+                        'attributes' => ['param',],
+                    ],
+                ];
+            }
+
+            public function rules(): array
+            {
+                return [
+                    ['param', 'safe'],
+                    ['param', 'integer'],
+                ];
+            }
+
+            /**
+             * @return array
+             * @throws \Exception
+             */
+            protected function generateResponse(): array
+            {
+                throw new \Exception("Method not implemented");
+            }
+        };
+
+        $paramValue = mt_rand();
+        $_GET['param'] = $paramValue;
+        $examplePanel->trigger(Http\Panel::EVENT_BEFORE_VALIDATE);
+        $this->assertEquals($paramValue, $examplePanel->param);
+    }
+
     public function testCorrectData(): void
     {
         $this->fakePanel = new Http\Tests\Mocks\PanelMock(
