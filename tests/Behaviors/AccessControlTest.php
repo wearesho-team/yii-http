@@ -4,6 +4,8 @@ namespace Wearesho\Yii\Http\Tests\Behaviors;
 
 use Wearesho\Yii\Http;
 
+use yii\base\Action;
+use yii\filters\AccessRule;
 use yii\rbac;
 use yii\web;
 
@@ -72,7 +74,7 @@ class AccessControlTest extends Http\Tests\AbstractTestCase
                         'class' => Http\Behaviors\AccessControl::class,
                         'rules' => [
                             [
-                                'roles' => [AccessControlTest::ROLE_ADMIN, ],
+                                'roles' => [AccessControlTest::ROLE_ADMIN,],
                             ]
                         ],
                         'user' => [
@@ -114,6 +116,76 @@ class AccessControlTest extends Http\Tests\AbstractTestCase
 
         /** @noinspection PhpUnhandledExceptionInspection */
         $this->panelInstance->getResponse();
+    }
+
+    /**
+     * @expectedException \Exception
+     * @expectedExceptionMessage Exception in callback user function!
+     */
+    public function testCheckAccessWithDenyCallback(): void
+    {
+        $control = new Http\Behaviors\AccessControl(
+            new Http\Request(),
+            [
+                'user' => [
+                    'identityClass' => Http\Tests\Mocks\UserMock::class,
+                ],
+                'denyCallback' => function ($i, Action $action) {
+                    throw new \Exception('Exception in callback user function!');
+                }
+            ]
+        );
+
+        $control->checkAccess();
+    }
+
+    /**
+     * @expectedException \Exception
+     * @expectedExceptionMessage Exception from rule
+     */
+    public function testCheckAccessWithUserGuest(): void
+    {
+        $control = new Http\Behaviors\AccessControl(
+            new Http\Request(),
+            [
+                'user' => [
+                    'identityClass' => web\User::class,
+                ],
+                'rules' => [
+                    new AccessRule([
+                        'denyCallback' => function ($rule, Action $action) {
+                            throw new \Exception('Exception from rule');
+                        }
+                    ])
+                ]
+            ]
+        );
+
+        $control->checkAccess();
+    }
+
+    /**
+     * @expectedException \Exception
+     * @expectedExceptionMessage Exception from deny callback
+     */
+    public function testCheckAccessWithNullDenyCallback(): void
+    {
+        $control = new Http\Behaviors\AccessControl(
+            new Http\Request(),
+            [
+                'user' => [
+                    'identityClass' => web\User::class,
+                ],
+                'rules' => [
+                    new AccessRule(['denyCallback' => null,]),
+                ],
+                'denyCallback' => function ($rule, Action $action) {
+                    throw new \Exception('Exception from deny callback');
+                },
+            ]
+        );
+
+        $control->checkAccess();
     }
 
     protected function tearDown(): void
