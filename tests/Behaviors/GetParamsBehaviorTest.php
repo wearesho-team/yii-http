@@ -74,22 +74,6 @@ class GetParamsBehaviorTest extends Http\Tests\AbstractTestCase
         $this->assertEquals($paramValue, $examplePanel->param);
     }
 
-    public function testCorrectData(): void
-    {
-        $this->fakePanel = new Http\Tests\Mocks\PanelMock(
-            new Http\Request(),
-            new Http\Response()
-        );
-
-        $_GET['id'] = $this->fakeId;
-        $_GET['name'] = $this->fakeName;
-
-        $this->fakePanel->trigger(Http\Panel::EVENT_BEFORE_VALIDATE);
-
-        $this->assertEquals($this->fakeId, $this->fakePanel->id);
-        $this->assertEquals($this->fakeName, $this->fakePanel->name);
-    }
-
     /**
      * @expectedException \yii\base\InvalidConfigException
      */

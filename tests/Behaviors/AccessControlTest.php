@@ -90,19 +90,18 @@ class AccessControlTest extends Http\Tests\AbstractTestCase
              */
             protected function generateResponse(): array
             {
-                throw new \Exception("Method not implemented");
+                return ['key' => 'value'];
             }
         };
     }
 
-    /**
-     * @expectedException \Exception
-     * @expectedExceptionMessage Method not implemented
-     */
     public function testCorrectAccess(): void
     {
         /** @noinspection PhpUnhandledExceptionInspection */
-        $this->panelInstance->getResponse();
+        $this->assertArraySubset(
+            ['key' => 'value'],
+            $this->panelInstance->getResponse()->data
+        );
     }
 
     /**
