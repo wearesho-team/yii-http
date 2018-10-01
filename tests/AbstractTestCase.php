@@ -4,9 +4,10 @@ namespace Wearesho\Yii\Http\Tests;
 
 use PHPUnit\Framework\TestCase;
 
+use Wearesho\Yii\Http\Response;
 use Wearesho\Yii\Http\Tests\Mocks\UserMock;
 
-use yii\console\Application;
+use yii\web\Application;
 use yii\db\Connection;
 use yii\di\Container;
 use yii\rbac\PhpManager;
@@ -40,6 +41,7 @@ abstract class AbstractTestCase extends TestCase
         \Yii::$container = new Container();
         /** @noinspection PhpUnhandledExceptionInspection */
         \Yii::$app = new Application(static::appConfig());
+        \Yii::$container->setSingleton(Response::class);
     }
 
     protected function tearDown(): void
@@ -70,7 +72,10 @@ abstract class AbstractTestCase extends TestCase
                     'class' => User::class,
                     'identityClass' => UserMock::class,
                     'enableSession' => false,
-                ]
+                ],
+                'response' => [
+                    'class' => Response::class,
+                ],
             ],
         ];
     }

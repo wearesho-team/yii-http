@@ -2,34 +2,53 @@
 
 namespace Wearesho\Yii\Http\Tests\Behaviors;
 
-use Wearesho\Yii\Http\Behaviors\ResponseFormat;
-use Wearesho\Yii\Http\Response;
-use Wearesho\Yii\Http\Tests\AbstractTestCase;
+use Wearesho\Yii\Http;
+
+use yii\base;
 
 /**
  * Class ResponseFormatTest
  * @package Wearesho\Yii\Http\Tests\Behaviors
  */
-class ResponseFormatTest extends AbstractTestCase
+class ResponseFormatTest extends Http\Tests\AbstractTestCase
 {
-    public function testSet(): void
-    {
-        $response = new Response();
-        $behavior = new ResponseFormat($response, [
-            'format' => Response::FORMAT_RAW,
-        ]);
-        $behavior->setFormat();
-
-        $this->assertEquals(Response::FORMAT_RAW, $response->format);
-    }
-
     /**
      * @expectedException \yii\base\InvalidConfigException
      * @expectedExceptionMessage Invalid response format
      */
     public function testInvalidFormat(): void
     {
-        $behavior = new ResponseFormat(new Response());
+        $behavior = new Http\Behaviors\ResponseFormat(new Http\Response());
         $behavior->setFormat();
+    }
+
+    public function testTrigger(): void
+    {
+        \Yii::$app->response->format = Http\Response::FORMAT_HTML;
+
+        $fakeController = new class('id', new base\Module('id')) extends Http\Controller
+        {
+            public $actions = [
+                'test' => ['get' => 'test',],
+            ];
+
+            public function behaviors(): array
+            {
+                return [
+                    'responseFormat' => [
+                        'class' => Http\Behaviors\ResponseFormat::class,
+                        'format' => Http\Response::FORMAT_JSON,
+                    ],
+                ];
+            }
+        };
+
+        $fakeController->enableCsrfValidation = false;
+        $fakeController->trigger(
+            Http\Controller::EVENT_BEFORE_ACTION,
+            new base\ActionEvent($fakeController->createAction('test'))
+        );
+
+        $this->assertEquals(Http\Response::FORMAT_JSON, \Yii::$app->response->format);
     }
 }
