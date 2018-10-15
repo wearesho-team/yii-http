@@ -9,9 +9,9 @@ use Wearesho\Yii\Http\Form;
  * Class PutForm
  * @package Wearesho\Yii\Http\Rest
  */
-class PutForm extends Form
+class PutForm extends Form implements SaveForm
 {
-    use RestPanelTrait, ScenarioTrait, ResponseConfigurable;
+    use RestPanelTrait, ScenarioTrait, ResponseConfigurable, SaveFormTrait;
 
     /**
      * @throws HttpValidationException
@@ -26,7 +26,7 @@ class PutForm extends Form
         }
         $this->record->load($this->request->bodyParams);
 
-        HttpValidationException::saveOrThrow($this->record);
+        $this->save($this->record);
 
         return $this->convert($this->record);
     }

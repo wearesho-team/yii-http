@@ -10,9 +10,9 @@ use yii\db\ActiveRecord;
  * Class PostForm
  * @package Wearesho\Yii\Http\Rest
  */
-class PostForm extends Form
+class PostForm extends Form implements SaveForm
 {
-    use ScenarioTrait, ResponseConfigurable;
+    use ScenarioTrait, ResponseConfigurable, SaveFormTrait;
 
     /** @var string ActiveRecord to be created */
     public $modelClass;
@@ -29,7 +29,7 @@ class PostForm extends Form
 
         $record->load($this->request->bodyParams);
 
-        HttpValidationException::saveOrThrow($record);
+        $this->save($record);
 
         return $this->convert($record);
     }
