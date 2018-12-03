@@ -42,7 +42,9 @@ abstract class CachePanel extends Panel
     {
         return $this->cache->getOrSet(
             $this->getCacheKey(),
-            [$this, 'generateRawResponse'],
+            function (): array {
+                return $this->generateRawResponse();
+            },
             $this->duration,
             $this->dependency
         );
