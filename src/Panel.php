@@ -8,6 +8,8 @@ use yii\base;
 /**
  * Class Panel
  * @package Wearesho\Yii\Http
+ *
+ * @property Action $action
  */
 abstract class Panel extends base\Model
 {
@@ -16,6 +18,9 @@ abstract class Panel extends base\Model
 
     /** @var  Response */
     protected $response;
+
+    /** @var Action|null */
+    private $action;
 
     /**
      * Panel constructor.
@@ -55,6 +60,15 @@ abstract class Panel extends base\Model
         return $this->response;
     }
 
+    public function setAction(Action $action): void
+    {
+        $this->action = $action;
+    }
+
+    public function getAction(): ?Action
+    {
+        return $this->action;
+    }
 
     /**
      * @throws HttpValidationException

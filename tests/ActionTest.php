@@ -106,6 +106,21 @@ class ActionTest extends AbstractTestCase
         );
     }
 
+    public function testPassingActionToPanel(): void
+    {
+        $_SERVER['REQUEST_METHOD'] = "POST";
+        \Yii::$container->setSingleton(Http\Rest\PostForm::class);
+
+        $this->action->run();
+
+        /** @var Http\Rest\PostForm $form */
+        $form = \Yii::$container->get(Http\Rest\PostForm::class);
+        $this->assertEquals(
+            $this->action,
+            $form->action
+        );
+    }
+
     /**
      * @expectedException \yii\web\NotFoundHttpException
      */
