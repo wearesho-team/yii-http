@@ -52,6 +52,7 @@ class Action extends base\Action
 
         /** @var Panel $panel */
         $panel = di\Instance::ensure($className, Panel::class);
+        $panel->setAction($this);
 
         return $panel->getResponse();
     }
