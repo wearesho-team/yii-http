@@ -53,9 +53,10 @@ abstract class Panel extends base\Model
         /** @noinspection PhpUnhandledExceptionInspection HttpValidationException thrown */
         HttpValidationException::validateOrThrow($this);
 
-        $this->trigger(base\Controller::EVENT_BEFORE_ACTION);
+        $event = $this->action instanceof Action ? new base\ActionEvent($this->action) : null;
+        $this->trigger(base\Controller::EVENT_BEFORE_ACTION, $event);
         $this->response->data = $this->generateResponse();
-        $this->trigger(base\Controller::EVENT_AFTER_ACTION);
+        $this->trigger(base\Controller::EVENT_AFTER_ACTION, $event);
 
         return $this->response;
     }
