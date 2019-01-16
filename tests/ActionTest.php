@@ -9,6 +9,7 @@ use PHPUnit\Framework\TestResult;
 use Wearesho\Yii\Http;
 
 use yii\base;
+use yii\web\NotFoundHttpException;
 
 /**
  * Class ActionTest
@@ -19,14 +20,14 @@ use yii\base;
 class ActionTest extends AbstractTestCase
 {
     /** @var Http\Action */
-    protected $action;
+    protected $httpAction;
 
     public function setUp(): void
     {
         parent::setUp();
 
         /** @noinspection PhpUnhandledExceptionInspection */
-        $this->action = \Yii::$container->get(
+        $this->httpAction = \Yii::$container->get(
             Http\Action::class,
             [
                 "id_action",
@@ -36,7 +37,7 @@ class ActionTest extends AbstractTestCase
                 ]),
                 [
                     "post" => [
-                        'class' => Http\Rest\PostForm::class
+                        'class' => Http\Tests\Mocks\PanelMock::class
                     ]
                 ]
             ]
@@ -56,7 +57,7 @@ class ActionTest extends AbstractTestCase
 
     public function testFull(): void
     {
-        $rest = $this->action->rest(base\Model::class);
+        $rest = $this->httpAction->rest(base\Model::class);
         $this->assertArraySubset(
             [
                 'get' => [
@@ -86,7 +87,7 @@ class ActionTest extends AbstractTestCase
 
     public function testCertainMethods(): void
     {
-        $rest = $this->action->rest(base\Model::class, ['post', 'patch', 'delete',]);
+        $rest = $this->httpAction->rest(base\Model::class, ['post', 'patch', 'delete',]);
         $this->assertArraySubset(
             [
                 'post' => [
@@ -109,29 +110,17 @@ class ActionTest extends AbstractTestCase
     public function testPassingActionToPanel(): void
     {
         $_SERVER['REQUEST_METHOD'] = "POST";
-        \Yii::$container->setSingleton(Http\Rest\PostForm::class);
+        \Yii::$container->setSingleton(Http\Tests\Mocks\PanelMock::class);
+        /** @var Http\Tests\Mocks\PanelMock $panel */
+        $panel = \Yii::$container->get(Http\Tests\Mocks\PanelMock::class);
 
-        $this->action->run();
+        $_GET['id'] = 1;
+        $_GET['name'] = 'Name';
 
-        /** @var Http\Rest\PostForm $form */
-        $form = \Yii::$container->get(Http\Rest\PostForm::class);
+        $this->httpAction->run();
         $this->assertEquals(
-            $this->action,
-            $form->action
-        );
-    }
-
-    /**
-     * @expectedException \yii\web\NotFoundHttpException
-     */
-    public function testRunException(): void
-    {
-        /** @noinspection PhpUnhandledExceptionInspection */
-        $runResult = $this->action->run();
-
-        $this->assertEquals(
-            new TestResult(),
-            $runResult
+            $this->httpAction,
+            $panel->action
         );
     }
 
@@ -141,19 +130,18 @@ class ActionTest extends AbstractTestCase
         /** @noinspection PhpUnhandledExceptionInspection */
         $this->assertEquals(
             null,
-            $this->action->run()
+            $this->httpAction->run()
         );
     }
 
     /**
-     * @expectedException \yii\base\InvalidConfigException
-     * @expectedExceptionMessage Connection::dsn cannot be empty.
+     * @expectedException \yii\web\NotFoundHttpException
      */
-    public function testRunPost(): void
+    public function testRunGet(): void
     {
-        $_SERVER['REQUEST_METHOD'] = "POST";
+        $_SERVER['REQUEST_METHOD'] = "GET";
 
         /** @noinspection PhpUnhandledExceptionInspection */
-        $this->action->run();
+        $this->httpAction->run();
     }
 }
