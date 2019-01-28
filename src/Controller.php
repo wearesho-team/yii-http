@@ -89,7 +89,7 @@ class Controller extends web\Controller
         if (isset($actionMap[$id])) {
             return new Action($id, $this, $actionMap[$id]);
         } elseif (\preg_match('/^[a-z0-9\\-_]+$/', $id) && \strpos($id, '--') === false && \trim($id, '-') === $id) {
-            $methodName = 'action' . \str_replace(' ', '', \ucwords(implode(' ', \explode('-', $id))));
+            $methodName = 'action' . \str_replace(' ', '', \ucwords(\implode(' ', \explode('-', $id))));
             if (\method_exists($this, $methodName)) {
                 $method = new \ReflectionMethod($this, $methodName);
                 if ($method->isPublic() && $method->getName() === $methodName) {
