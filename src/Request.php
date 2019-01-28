@@ -18,16 +18,16 @@ class Request extends web\Request
 
     public function getReferrerBase(): string
     {
-        $urlParts = parse_url($this->referrer);
-        $isUrlFull = array_key_exists('scheme', $urlParts)
-            && array_key_exists('host', $urlParts);
+        $urlParts = \parse_url($this->referrer);
+        $isUrlFull = \array_key_exists('scheme', $urlParts)
+            && \array_key_exists('host', $urlParts);
 
         if (!$isUrlFull) {
             return '';
         }
 
         $domain = "{$urlParts['scheme']}://{$urlParts['host']}";
-        if (array_key_exists('port', $urlParts)) {
+        if (\array_key_exists('port', $urlParts)) {
             $domain .= ":{$urlParts['port']}";
         }
 

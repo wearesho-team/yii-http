@@ -67,8 +67,8 @@ class AccessControl extends base\Behavior
         parent::init();
         $this->user = di\Instance::ensure($this->user, web\User::class);
         foreach ($this->rules as $i => $rule) {
-            if (is_array($rule)) {
-                $config = array_merge($this->ruleConfig, $rule);
+            if (\is_array($rule)) {
+                $config = \array_merge($this->ruleConfig, $rule);
                 $this->rules[$i] = \Yii::createObject($config);
             }
         }
@@ -81,7 +81,7 @@ class AccessControl extends base\Behavior
     {
         $user = $this->user;
         $action = new base\Action(
-            get_called_class(),
+            \get_called_class(),
             new base\Controller(
                 'fake-controller',
                 new base\Module('fake-module')
@@ -94,9 +94,9 @@ class AccessControl extends base\Behavior
                 return;
             } elseif ($allow === false) {
                 if (isset($rule->denyCallback)) {
-                    call_user_func($rule->denyCallback, $rule, $action);
+                    \call_user_func($rule->denyCallback, $rule, $action);
                 } elseif ($this->denyCallback !== null) {
-                    call_user_func($this->denyCallback, $rule, $action);
+                    \call_user_func($this->denyCallback, $rule, $action);
                 }
 
                 $this->deny($user);
@@ -104,7 +104,7 @@ class AccessControl extends base\Behavior
         }
 
         if ($this->denyCallback !== null) {
-            call_user_func($this->denyCallback, null, $action);
+            \call_user_func($this->denyCallback, null, $action);
         }
         $this->deny($user);
     }

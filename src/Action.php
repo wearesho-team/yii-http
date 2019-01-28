@@ -40,13 +40,13 @@ class Action extends base\Action
      */
     public function run()
     {
-        $method = mb_strtolower(\Yii::$app->request->method);
+        $method = \mb_strtolower(\Yii::$app->request->method);
         if ($method === 'options') {
             return null;
         }
 
         $className = $this->panels[$method] ?? null;
-        if (is_null($className)) {
+        if (\is_null($className)) {
             throw new web\NotFoundHttpException();
         }
 
@@ -82,8 +82,8 @@ class Action extends base\Action
             ],
         ];
 
-        return array_filter($actions, function ($method) use ($methods) {
-            return in_array($method, $methods);
+        return \array_filter($actions, function ($method) use ($methods) {
+            return \in_array($method, $methods);
         }, ARRAY_FILTER_USE_KEY);
     }
 }

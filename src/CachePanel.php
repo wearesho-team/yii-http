@@ -33,7 +33,7 @@ abstract class CachePanel extends Panel
     {
         parent::init();
         $this->cache = di\Instance::ensure($this->cache, caching\Cache::class);
-        if (!is_null($this->dependency)) {
+        if (!\is_null($this->dependency)) {
             $this->dependency = di\Instance::ensure($this->dependency, caching\Dependency::class);
         }
     }

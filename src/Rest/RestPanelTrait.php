@@ -40,7 +40,7 @@ trait RestPanelTrait
     {
         if (parent::beforeValidate()) {
             /** @var ActiveRecord|null $record */
-            $this->record = $this->filter(call_user_func([$this->modelClass, 'find']))->one();
+            $this->record = $this->filter(\call_user_func([$this->modelClass, 'find']))->one();
             if (!$this->record instanceof $this->modelClass) {
                 throw new NotFoundHttpException("Resource #{$this->id} not found!");
             }
@@ -57,18 +57,18 @@ trait RestPanelTrait
      */
     protected function filter(ActiveQuery $query): ActiveQuery
     {
-        $primaryKey = call_user_func([$this->modelClass, 'primaryKey']);
-        if (!array_key_exists(0, $primaryKey)) {
+        $primaryKey = \call_user_func([$this->modelClass, 'primaryKey']);
+        if (!\array_key_exists(0, $primaryKey)) {
             throw new InvalidConfigException("Can not use {$this->modelClass} that have no primary key");
         }
 
         $query->andWhere(['=', $primaryKey[0], $this->id]);
 
-        if ($this->filter instanceof \Closure || is_array($this->filter) && is_callable($this->filter)) {
-            call_user_func($this->filter, $query);
-        } elseif (is_array($this->filter)) {
+        if ($this->filter instanceof \Closure || \is_array($this->filter) && \is_callable($this->filter)) {
+            \call_user_func($this->filter, $query);
+        } elseif (\is_array($this->filter)) {
             $query->andWhere($this->filter);
-        } elseif (!is_null($this->filter)) {
+        } elseif (!\is_null($this->filter)) {
             throw new InvalidConfigException("Filter should be query array or callable that receives query");
         }
 
