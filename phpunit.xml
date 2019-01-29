@@ -1,4 +1,4 @@
-<phpunit bootstrap="./tests/bootstrap.php" backupGlobals="false" colors="true">
+<phpunit bootstrap="./tests/autoload.php" backupGlobals="false" colors="true">
     <php>
         <env name="DB_PATH" value="./tests/database.sqlite"/>
     </php>

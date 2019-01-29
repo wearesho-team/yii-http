@@ -1,4 +1,6 @@
-<?php // phpcs:ignore
+<?php  // phpcs:ignore
+
+\Yii::setAlias('@Wearesho/Yii/Http', \dirname(__DIR__, 3));
 
 $envPath = __DIR__ . DIRECTORY_SEPARATOR . 'Environment' . DIRECTORY_SEPARATOR . 'Dev';
 $env = '.env';

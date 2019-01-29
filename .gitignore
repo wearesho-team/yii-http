@@ -2,3 +2,4 @@
 /tests/database.sqlite
 /vendor/
 .DS_Store
+/tests/Environment/Dev/.env
