@@ -82,8 +82,6 @@ class Action extends base\Action
             ],
         ];
 
-        return array_filter($actions, function ($method) use ($methods) {
-            return in_array($method, $methods);
-        }, ARRAY_FILTER_USE_KEY);
+        return \array_intersect_key($actions, \array_flip($methods));
     }
 }
