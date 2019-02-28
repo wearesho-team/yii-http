@@ -12,6 +12,7 @@
     "horat1us/yii2-base": "^1.8.1"
   },
   "require-dev": {
+    "brainmaestro/composer-git-hooks": "^2.6",
     "phpunit/phpunit": "^6.3",
     "squizlabs/php_codesniffer": "^3.3"
   },
@@ -41,8 +42,20 @@
     }
   },
   "scripts": {
-    "lint": "./vendor/bin/phpcs --standard=PSR2 ./src ./tests",
-    "phpcbf": "./vendor/bin/phpcbf --standard=PSR2 ./src ./tests",
-    "test": "./vendor/bin/phpunit"
+    "lint": "phpcs --standard=PSR2 ./src ./tests",
+    "phpcbf": "phpcbf --standard=PSR2 ./src ./tests",
+    "cover": "phpunit --coverage-clover=coverage.xml",
+    "test": "phpunit",
+    "post-install-cmd": "cghooks add --ignore-lock",
+    "post-update-cmd": "cghooks update"
+  },
+  "extra": {
+    "hooks": {
+      "pre-commit": [
+        "composer lint",
+        "composer test"
+      ],
+      "post-merge": "composer update --lock"
+    }
   }
 }
