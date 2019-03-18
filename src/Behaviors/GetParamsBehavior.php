@@ -2,14 +2,13 @@
 
 namespace Wearesho\Yii\Http\Behaviors;
 
-use Wearesho\Yii\Http\Panel;
 use yii\base;
 use yii\web;
 
 /**
  * Class GetParamsBehavior
  * @package api\modules\staff\behaviors
- * @property Panel $owner
+ * @property base\Model $owner
  */
 class GetParamsBehavior extends base\Behavior
 {
@@ -36,7 +35,7 @@ class GetParamsBehavior extends base\Behavior
     public function events()
     {
         return [
-            Panel::EVENT_BEFORE_VALIDATE => 'loadParams',
+            base\Model::EVENT_BEFORE_VALIDATE => 'loadParams',
         ];
     }
 
@@ -45,8 +44,8 @@ class GetParamsBehavior extends base\Behavior
      */
     public function loadParams()
     {
-        if (!$this->owner instanceof Panel) {
-            throw new base\InvalidConfigException(static::class . " may be append only to " . Panel::class);
+        if (!$this->owner instanceof base\Model) {
+            throw new base\InvalidConfigException(static::class . " may be append only to " . base\Model::class);
         }
         foreach ((array)$this->attributes as $attribute) {
             $value = $this->request->get($attribute);
