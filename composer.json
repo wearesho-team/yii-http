@@ -7,8 +7,8 @@
     "http"
   ],
   "require": {
-    "php": ">=7.1",
-    "yiisoft/yii2": "~2.0.13",
+    "php": ">=7.4",
+    "yiisoft/yii2": "~2.0.31",
     "horat1us/yii2-base": "^1.8.1"
   },
   "require-dev": {
@@ -37,7 +37,7 @@
     "process-timeout": 1800,
     "sort-packages": true,
     "platform": {
-      "php": "7.1"
+      "php": "7.4"
     }
   },
   "scripts": {

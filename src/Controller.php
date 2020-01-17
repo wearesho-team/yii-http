@@ -50,7 +50,7 @@ class Controller extends web\Controller
     {
         return ArrayHelper::merge([
             'authenticator' => [
-                'class' => filters\auth\HttpBearerAuth::class,
+                'class' => Behaviors\HttpBearerAuth::class,
                 'optional' => array_keys($this->actions()),
             ],
             'corsFilter' => [

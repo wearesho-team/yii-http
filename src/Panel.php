@@ -47,16 +47,13 @@ abstract class Panel extends base\Model
      */
     public function getResponse(): Response
     {
-        $this->response->format = Response::FORMAT_JSON;
-
         $this->load($this->request->getBodyParams());
         /** @noinspection PhpUnhandledExceptionInspection HttpValidationException thrown */
         HttpValidationException::validateOrThrow($this);
 
-        $event = $this->action instanceof Action ? new base\ActionEvent($this->action) : null;
-        $this->trigger(base\Controller::EVENT_BEFORE_ACTION, $event);
-        $this->response->data = $this->generateResponse();
-        $this->trigger(base\Controller::EVENT_AFTER_ACTION, $event);
+        $this->response->data = $this->beforeAction()
+            ? $this->afterAction($this->generateResponse())
+            : [];
 
         return $this->response;
     }
@@ -71,9 +68,24 @@ abstract class Panel extends base\Model
         return $this->action;
     }
 
+    public function beforeAction(): bool
+    {
+        $event = new base\ActionEvent($this->action);
+        $this->trigger(base\Controller::EVENT_BEFORE_ACTION, $event);
+        return $event->isValid;
+    }
+
+    public function afterAction(array $data)
+    {
+        $event = new base\ActionEvent($this->action);
+        $event->result = $data;
+        $this->trigger(base\Controller::EVENT_AFTER_ACTION, $event);
+        return $event->result;
+    }
+
     /**
-     * @throws HttpValidationException
      * @return array
+     * @throws HttpValidationException
      */
     abstract protected function generateResponse(): array;
 }
