@@ -50,7 +50,7 @@ class Response extends web\Response
         $verb = \Yii::$app->request;
         return $this->getIsSuccessful()
             && is_string($this->cacheControl) && $verb !== 'GET' && $verb !== 'HEAD'
-            && (is_null($this->stream) || empty($this->content));
+            && (is_null($this->stream) || !empty($this->content));
     }
 
     protected function prepare()
