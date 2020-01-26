@@ -19,7 +19,7 @@ class Response extends web\Response
      */
     public $format = null;
 
-    public $cacheControl = 'private, must-revalidate, max-age=604800';
+    public $cacheControl = 'private, no-cache, max-age=604800';
 
     /**
      * @param \Error|\Exception $e
@@ -82,7 +82,7 @@ class Response extends web\Response
         } else {
             $this->headers->set('Vary', array_diff($vary, ['Accept-Language']));
         }
-        $this->headers->setDefault('Cache-Control', 'private, no-cache, max-age=604800');
+        $this->headers->setDefault('Cache-Control', $this->cacheControl);
         $eTag = $this->headers->get('ETag');
         if (is_null($eTag)) {
             $eTag = 'W/"' . hash('crc32', $this->content) . '"';
