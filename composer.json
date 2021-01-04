@@ -1,6 +1,7 @@
 {
   "name": "wearesho-team/yii-http",
   "type": "proprietary",
+  "description": "Yii2 Web Extension for internal Wearesho Team projects usage",
   "keywords": [
     "wearesho",
     "yii",
