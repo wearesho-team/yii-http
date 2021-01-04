@@ -56,7 +56,6 @@ class Response extends web\Response
     protected function prepare()
     {
         $this->prepareFormat();
-        ;
 
         parent::prepare();
 
