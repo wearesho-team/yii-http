@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Wearesho\Yii\Http\Tests;
 
@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestResult;
 use Wearesho\Yii\Http;
 
 use yii\base;
-use yii\web\NotFoundHttpException;
+use yii\web;
 
 /**
  * Class ActionTest
@@ -58,7 +58,7 @@ class ActionTest extends AbstractTestCase
     public function testFull(): void
     {
         $rest = $this->httpAction->rest(base\Model::class);
-        $this->assertArraySubset(
+        $this->assertEquals(
             [
                 'get' => [
                     'class' => Http\Rest\GetPanel::class,
@@ -88,7 +88,7 @@ class ActionTest extends AbstractTestCase
     public function testCertainMethods(): void
     {
         $rest = $this->httpAction->rest(base\Model::class, ['post', 'patch', 'delete',]);
-        $this->assertArraySubset(
+        $this->assertEquals(
             [
                 'post' => [
                     'class' => Http\Rest\PostForm::class,
@@ -134,13 +134,11 @@ class ActionTest extends AbstractTestCase
         );
     }
 
-    /**
-     * @expectedException \yii\web\NotFoundHttpException
-     */
     public function testRunGet(): void
     {
         $_SERVER['REQUEST_METHOD'] = "GET";
 
+        $this->expectException(web\NotFoundHttpException::class);
         /** @noinspection PhpUnhandledExceptionInspection */
         $this->httpAction->run();
     }
