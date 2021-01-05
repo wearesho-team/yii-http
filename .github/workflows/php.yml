@@ -9,20 +9,19 @@ on:
 jobs:
   build:
     runs-on: ${{ matrix.operating-system }}
-      strategy:
-        matrix:
-          operating-system: [ ubuntu-latest, macOS-latest ]
-          php-versions: [ '7.4', '8.0', '8.1' ]
-      name: PHP ${{ matrix.php-versions }} Test on ${{ matrix.operating-system }}
-
+    strategy:
+      matrix:
+        operating-system: [ ubuntu-latest, macOS-latest ]
+        php-versions: [ '7.4', '8.0', '8.1' ]
+    name: PHP ${{ matrix.php-versions }} Test on ${{ matrix.operating-system }}
     steps:
       - uses: actions/checkout@v2
 
       - name: Install PHP
-          uses: shivammathur/setup-php@v2
-          with:
-            php-version: ${{ matrix.php-versions }}
-            ini-values: "post_max_size=128M"
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          ini-values: "post_max_size=128M"
 
       - name: Check PHP Version
         run: php -v
