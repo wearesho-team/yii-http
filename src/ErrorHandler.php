@@ -2,15 +2,15 @@
 
 namespace Wearesho\Yii\Http;
 
-use Horat1us\Yii\Interfaces\ModelExceptionInterface;
 use Wearesho\Yii\Http\Exceptions\HttpValidationException;
-use yii\web\ErrorHandler as WebErrorHandler;
+use Horat1us\Yii\Validation;
+use yii\web;
 
 /**
  * Class ErrorHandler
  * @package Wearesho\Yii\Http
  */
-class ErrorHandler extends WebErrorHandler
+class ErrorHandler extends web\ErrorHandler
 {
     /**
      * @param \Error|\Exception $exception
@@ -20,7 +20,7 @@ class ErrorHandler extends WebErrorHandler
     {
         $exceptionArray = parent::convertExceptionToArray($exception);
 
-        $shouldDisplayErrors = $exception instanceof ModelExceptionInterface
+        $shouldDisplayErrors = ($exception instanceof Validation\Failure)
             && ($exception instanceof HttpValidationException || YII_DEBUG);
 
         if ($shouldDisplayErrors) {

@@ -74,10 +74,7 @@ class GetParamsBehaviorTest extends Http\Tests\AbstractTestCase
         $this->assertEquals($paramValue, $examplePanel->param);
     }
 
-    /**
-     * @expectedException \yii\base\InvalidConfigException
-     */
-    public function testNotPanel(): void
+    public function testModel(): void
     {
         $this->fakePanel = new class extends base\Model
         {
@@ -104,15 +101,15 @@ class GetParamsBehaviorTest extends Http\Tests\AbstractTestCase
             {
                 return [
                     [
-                        ['id', ],
+                        ['id',],
                         'integer',
                     ],
                     [
-                        ['name', ],
+                        ['name',],
                         'string',
                     ],
                     [
-                        ['id', 'name', ],
+                        ['id', 'name',],
                         'required',
                     ]
                 ];
@@ -130,5 +127,23 @@ class GetParamsBehaviorTest extends Http\Tests\AbstractTestCase
         $_GET['name'] = $this->fakeName;
 
         $this->fakePanel->trigger(Http\Panel::EVENT_BEFORE_VALIDATE);
+
+        $this->assertEquals($this->fakeId, $this->fakePanel->id);
+        $this->assertEquals($this->fakeName, $this->fakePanel->name);
+    }
+
+    public function testInvalidOwner(): void
+    {
+        /** @noinspection PhpUnhandledExceptionInspection */
+        /** @var Http\Behaviors\GetParamsBehavior $behavior */
+        $behavior = \Yii::$container->get(Http\Behaviors\GetParamsBehavior::class);
+        $behavior->owner = new base\BaseObject;
+
+        $this->expectException(base\InvalidConfigException::class);
+        $this->expectExceptionMessage(
+            'Wearesho\Yii\Http\Behaviors\GetParamsBehavior may be append only to yii\base\Model'
+        );
+
+        $behavior->loadParams();
     }
 }

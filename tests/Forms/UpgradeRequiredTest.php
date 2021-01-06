@@ -1,18 +1,14 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Wearesho\Yii\Http\Tests\Forms;
 
 use Wearesho\Yii\Http\Tests\AbstractTestCase;
 use Wearesho\Yii\Http\Panels;
+use yii\web;
 
-/**
- * Class UpgradeRequiredTest
- * @package Wearesho\Yii\Http\Tests\Forms
- */
 class UpgradeRequiredTest extends AbstractTestCase
 {
-    /** @var Panels\UpgradeRequired */
-    protected $panel;
+    protected Panels\UpgradeRequired  $panel;
 
     protected function setUp(): void
     {
@@ -20,22 +16,19 @@ class UpgradeRequiredTest extends AbstractTestCase
         $this->panel = \Yii::$container->get(Panels\UpgradeRequired::class);
     }
 
-    /**
-     * @expectedException \yii\web\HttpException
-     * @expectedExceptionMessage This method was deprecated. Contact developers for details.
-     */
-    public function testThrowingExceptions()
+    public function testThrowingExceptions(): void
     {
+        $this->expectException(web\HttpException::class);
+        $this->expectExceptionMessage('This method was deprecated. Contact developers for details.');
         $this->panel->getResponse();
     }
 
-    /**
-     * @expectedException \yii\web\HttpException
-     * @expectedExceptionMessage Custom Text.
-     */
-    public function testCustomExceptionMessage()
+    public function testCustomExceptionMessage(): void
     {
-        $this->panel->message = 'Custom Text.';
+        $exceptionMessage = 'Custom Text.';
+        $this->panel->message = $exceptionMessage;
+        $this->expectException(web\HttpException::class);
+        $this->expectExceptionMessage($exceptionMessage);
         $this->panel->getResponse();
     }
 }
