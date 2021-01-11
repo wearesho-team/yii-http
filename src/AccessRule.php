@@ -25,9 +25,9 @@ class AccessRule extends filters\AccessRule
      */
     public function allows($action, $user, $request)
     {
-        if (!empty($this->permissions) && is_callable($this->permissions)) {
+        if (!empty($this->permissions) && \is_callable($this->permissions)) {
             $permissions = $this->permissions;
-            $this->permissions = call_user_func($this->permissions);
+            $this->permissions = \call_user_func($this->permissions);
         }
 
         $result = parent::allows($action, $user, $request);

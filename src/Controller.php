@@ -51,7 +51,7 @@ class Controller extends web\Controller
         return ArrayHelper::merge([
             'authenticator' => [
                 'class' => Behaviors\HttpBearerAuth::class,
-                'optional' => array_keys($this->actions()),
+                'optional' => \array_keys($this->actions()),
             ],
             'corsFilter' => [
                 'class' => filters\Cors::class,
@@ -64,8 +64,8 @@ class Controller extends web\Controller
             ],
             'verbs' => [
                 'class' => filters\VerbFilter::class,
-                'actions' => array_map(function ($panels) {
-                    return array_merge(['OPTIONS'], array_keys($panels));
+                'actions' => \array_map(function ($panels) {
+                    return \array_merge(['OPTIONS'], \array_keys($panels));
                 }, $this->actions()),
             ],
         ], $this->behaviors);
@@ -94,9 +94,9 @@ class Controller extends web\Controller
         $actionMap = $this->actions();
         if (isset($actionMap[$id])) {
             return new Action($id, $this, $actionMap[$id]);
-        } elseif (preg_match('/^[a-z0-9\\-_]+$/', $id) && strpos($id, '--') === false && trim($id, '-') === $id) {
-            $methodName = 'action' . str_replace(' ', '', ucwords(implode(' ', explode('-', $id))));
-            if (method_exists($this, $methodName)) {
+        } elseif (\preg_match('/^[a-z0-9\\-_]+$/', $id) && \strpos($id, '--') === false && \trim($id, '-') === $id) {
+            $methodName = 'action' . \str_replace(' ', '', \ucwords(\implode(' ', \explode('-', $id))));
+            if (\method_exists($this, $methodName)) {
                 $method = new \ReflectionMethod($this, $methodName);
                 if ($method->isPublic() && $method->getName() === $methodName) {
                     return new base\InlineAction($id, $this, $methodName);

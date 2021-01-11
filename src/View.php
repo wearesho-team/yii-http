@@ -17,7 +17,7 @@ abstract class View
 
     public static function multiple(array $items, ...$args)
     {
-        return array_map(function (...$itemArgs) use ($args) {
+        return \array_map(function (...$itemArgs) use ($args) {
             return static::render(...$args, ...$itemArgs);
         }, $items);
     }
