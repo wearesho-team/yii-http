@@ -38,17 +38,11 @@ class Controller extends web\Controller
     public $actions = [];
 
     /**
-     * @var array
-     * @see behaviors()
-     */
-    public $behaviors = [];
-
-    /**
      * @return array
      */
     public function behaviors()
     {
-        return ArrayHelper::merge([
+        return [
             'authenticator' => [
                 'class' => Behaviors\HttpBearerAuth::class,
                 'optional' => \array_keys($this->actions()),
@@ -68,7 +62,7 @@ class Controller extends web\Controller
                     return \array_merge(['OPTIONS'], \array_keys($panels));
                 }, $this->actions()),
             ],
-        ], $this->behaviors);
+        ];
     }
 
     /**
