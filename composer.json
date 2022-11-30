@@ -9,8 +9,8 @@
   ],
   "require": {
     "php": ">=7.4",
-    "yiisoft/yii2": "~2.0.35",
-    "horat1us/yii2-base": "^1.8.1"
+    "horat1us/yii2-base": "^1.8.1",
+    "yiisoft/yii2": "~2.0.43"
   },
   "require-dev": {
     "horat1us/yii2-asset-free": "^1.0.1",
@@ -40,6 +40,9 @@
     "sort-packages": true,
     "platform": {
       "php": "7.4"
+    },
+    "allow-plugins": {
+      "yiisoft/yii2-composer": true
     }
   },
   "scripts": {

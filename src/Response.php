@@ -21,6 +21,33 @@ class Response extends web\Response
 
     public $cacheControl = 'private, must-revalidate, max-age=604800';
 
+    protected function defaultFormatters(): array
+    {
+        return [
+            self::FORMAT_HTML => [
+                'class' => web\HtmlResponseFormatter::class,
+            ],
+            self::FORMAT_XML => [
+                'class' => web\XmlResponseFormatter::class,
+            ],
+            /**
+             * @link https://github.com/yiisoft/yii2/blob/2.0.47/framework/UPGRADE.md#upgrade-from-yii-2043
+             */
+            self::FORMAT_JSON => [
+                'class' => web\JsonResponseFormatter::class,
+                'useJsonp' => true,
+                'prettyPrint' => YII_DEBUG,
+                'keepObjectType' => true,
+            ],
+            self::FORMAT_JSONP => [
+                'class' => web\JsonResponseFormatter::class,
+                'useJsonp' => true,
+                'prettyPrint' => YII_DEBUG,
+                'keepObjectType' => true,
+            ],
+        ];
+    }
+
     /**
      * @param \Error|\Exception $e
      * @return $this|web\Response
