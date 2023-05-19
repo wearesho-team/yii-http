@@ -47,15 +47,6 @@ class Controller extends web\Controller
                 'class' => Behaviors\HttpBearerAuth::class,
                 'optional' => \array_keys($this->actions()),
             ],
-            'corsFilter' => [
-                'class' => filters\Cors::class,
-                'cors' => [
-                    'Origin' => ['*'],
-                    'Access-Control-Request-Method' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
-                    'Access-Control-Request-Headers' => ['*'],
-                    'Access-Control-Max-Age' => 86400,
-                ],
-            ],
             'verbs' => [
                 'class' => filters\VerbFilter::class,
                 'actions' => \array_map(function ($panels) {
