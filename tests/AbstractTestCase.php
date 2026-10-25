@@ -48,6 +48,7 @@ abstract class AbstractTestCase extends TestCase
     {
         parent::tearDown();
 
+        \Yii::$app?->getErrorHandler()->unregister();
         \Yii::$app = null;
         \Yii::$container = null;
     }

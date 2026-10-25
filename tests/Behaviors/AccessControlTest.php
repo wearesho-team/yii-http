@@ -182,5 +182,6 @@ class AccessControlTest extends Http\Tests\AbstractTestCase
     protected function tearDown(): void
     {
         static::$authManager->removeAll();
+        parent::tearDown();
     }
 }
