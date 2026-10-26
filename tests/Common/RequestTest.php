@@ -27,7 +27,7 @@ class RequestTest extends TestCase
                 return $this->referrer;
             }
 
-            public function setReferrer(string $referrer = null): Http\Request
+            public function setReferrer(?string $referrer = null): Http\Request
             {
                 $this->referrer = $referrer;
                 return $this;

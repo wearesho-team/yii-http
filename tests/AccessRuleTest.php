@@ -168,5 +168,6 @@ class AccessRuleTest extends AbstractTestCase
     protected function tearDown(): void
     {
         static::$authManager->removeAll();
+        parent::tearDown();
     }
 }

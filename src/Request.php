@@ -18,7 +18,7 @@ class Request extends web\Request
 
     public function getReferrerBase(): string
     {
-        $urlParts = \parse_url($this->referrer);
+        $urlParts = \parse_url($this->referrer ?? '');
         $isUrlFull = \array_key_exists('scheme', $urlParts)
             && \array_key_exists('host', $urlParts);
 

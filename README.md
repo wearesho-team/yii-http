@@ -1,10 +1,12 @@
 # Yii2 Http
 [![Latest Stable Version](https://poser.pugx.org/wearesho-team/yii-http/v/stable.png)](https://packagist.org/packages/wearesho-team/yii-http)
 [![Total Downloads](https://poser.pugx.org/wearesho-team/yii-http/downloads.png)](https://packagist.org/packages/wearesho-team/yii-http)
-[![Build Status](https://travis-ci.org/wearesho-team/yii-http.svg?branch=master)](https://travis-ci.org/wearesho-team/yii-http)
+[![PHP Composer](https://github.com/wearesho-team/yii-http/actions/workflows/php.yml/badge.svg?branch=master)](https://github.com/wearesho-team/yii-http/actions/workflows/php.yml)
 [![codecov](https://codecov.io/gh/wearesho-team/yii-http/branch/master/graph/badge.svg)](https://codecov.io/gh/wearesho-team/yii-http)
 
 Alternative work with HTTP
+
+Compatibility: tested on PHP 8.4, PHP 8.5
 
 ## Contents
 
@@ -52,7 +54,7 @@ print_r($output);
  * Will output: 
  * Array
   (
-      [bar] => 1
+      [bar] => foo
   )
  */
 // or if you have multiple data
@@ -84,7 +86,7 @@ Fills Panel attributes from \yii\web\Request::get().
 
 ## Installation
 ```bash
-composer require wearesho-team/yii-http
+composer require wearesho-team/yii-http:^1.17
 ```
 Add to your DI container:
 ```php
